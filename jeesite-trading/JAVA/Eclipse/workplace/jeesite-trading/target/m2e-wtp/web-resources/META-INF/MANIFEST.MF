@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: JeeSite Trading
+Implementation-Version: 4.1.3-SNAPSHOT
+Built-By: Drajun
+Implementation-Vendor-Id: com.jeesite
+Build-Jdk: 1.8.0_144
+Implementation-URL: http://jeesite.com
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: JeeSite
+Main-Class: com.jeesite.modules.Application
+
