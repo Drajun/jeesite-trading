@@ -1,5 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
+encoding//src/main/resources/views/modules/exhibition/exhibitionCForm.html=UTF-8
+encoding//src/main/resources/views/modules/exhibition/exhibitionCList.html=UTF-8
+encoding//src/main/resources/views/modules/test/testDataForm.html=UTF-8
 encoding//src/test/java=UTF-8
 encoding/<project>=UTF-8
