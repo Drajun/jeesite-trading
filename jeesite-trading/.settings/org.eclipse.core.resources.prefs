@@ -1,6 +1,10 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
+encoding//src/main/resources/views/basic/customers/customersCForm.html=UTF-8
+encoding//src/main/resources/views/basic/customers/customersCList.html=UTF-8
+encoding//src/main/resources/views/basic/factory/factoryCForm.html=UTF-8
+encoding//src/main/resources/views/basic/factory/factoryCList.html=UTF-8
 encoding//src/main/resources/views/basic/product/productCForm.html=UTF-8
 encoding//src/main/resources/views/basic/product/productCList.html=UTF-8
 encoding//src/main/resources/views/modules/test/testDataForm.html=UTF-8
