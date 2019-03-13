@@ -15,7 +15,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 /**
  * 货物管理Entity
  * @author longlou.d@foxmail.com
- * @version 2019-03-12
+ * @version 2019-03-13
  */
 @Table(name="product_c", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
@@ -26,6 +26,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="level", attrName="level", label="货物等级"),
 		@Column(name="package_unit", attrName="packageUnit", label="包装单位", isQuery=false),
 		@Column(name="spec", attrName="spec", label="规格", queryType=QueryType.LIKE),
+		@Column(name="weight", attrName="weight", label="单个重量", isQuery=false),
 		@Column(name="position", attrName="position", label="存放位置"),
 		@Column(name="total_sold_num", attrName="totalSoldNum", label="已销售量", isQuery=false),
 		@Column(includeEntity=DataEntity.class),
@@ -41,6 +42,7 @@ public class ProductC extends DataEntity<ProductC> {
 	private String level;		// 货物等级
 	private String packageUnit;		// 包装单位
 	private String spec;		// 规格
+	private Double weight;		// 单个重量
 	private String position;		// 存放位置
 	private Long totalSoldNum;		// 已销售量
 	
@@ -98,7 +100,7 @@ public class ProductC extends DataEntity<ProductC> {
 	}
 	
 	@NotBlank(message="包装单位不能为空")
-	@Length(min=0, max=20, message="包装单位长度不能超过 20个字符")
+	@Length(min=0, max=1, message="包装单位长度不能超过 1 个字符")
 	public String getPackageUnit() {
 		return packageUnit;
 	}
@@ -115,6 +117,15 @@ public class ProductC extends DataEntity<ProductC> {
 
 	public void setSpec(String spec) {
 		this.spec = spec;
+	}
+	
+	@NotNull(message="单个重量不能为空")
+	public Double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Double weight) {
+		this.weight = weight;
 	}
 	
 	@Length(min=0, max=64, message="存放位置长度不能超过 64 个字符")

@@ -81,6 +81,9 @@ $('#dataGrid').dataGrid({
 		{header:'${text("货物等级")}', name:'level', index:'a.level', width:150, align:"left"},
 		{header:'${text("包装单位")}', name:'packageUnit', index:'a.package_unit', width:150, align:"left"},
 		{header:'${text("规格")}', name:'spec', index:'a.spec', width:150, align:"left"},
+		{header:'${text("单个重量")}', name:'weight', index:'a.weight', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
 		{header:'${text("存放位置")}', name:'position', index:'a.position', width:150, align:"left"},
 		{header:'${text("已销售量")}', name:'totalSoldNum', index:'a.total_sold_num', width:150, align:"center"},
 		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){

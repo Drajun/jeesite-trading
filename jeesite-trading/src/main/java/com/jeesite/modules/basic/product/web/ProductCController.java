@@ -25,7 +25,7 @@ import com.jeesite.modules.basic.product.service.ProductCService;
 /**
  * 货物管理Controller
  * @author longlou.d@foxmail.com
- * @version 2019-03-12
+ * @version 2019-03-13
  */
 @Controller
 @RequestMapping(value = "${adminPath}/product/productC")

@@ -10,14 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.basic.product.dao.ProductCDao;
 import com.jeesite.modules.basic.product.entity.ProductC;
+import com.jeesite.modules.basic.product.dao.ProductCDao;
 import com.jeesite.modules.file.utils.FileUploadUtils;
 
 /**
  * 货物管理Service
  * @author longlou.d@foxmail.com
- * @version 2019-03-12
+ * @version 2019-03-13
  */
 @Service
 @Transactional(readOnly=true)

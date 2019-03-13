@@ -12,5 +12,7 @@ encoding//src/main/resources/views/presale/exhibition/exhibitionCForm.html=UTF-8
 encoding//src/main/resources/views/presale/exhibition/exhibitionCList.html=UTF-8
 encoding//src/main/resources/views/presale/exhibitionCheck/exhibitionCForm.html=UTF-8
 encoding//src/main/resources/views/presale/exhibitionCheck/exhibitionCList.html=UTF-8
+encoding//src/main/resources/views/presale/offerCheck/offerCForm.html=UTF-8
+encoding//src/main/resources/views/presale/offerCheck/offerCList.html=UTF-8
 encoding//src/test/java=UTF-8
 encoding/<project>=UTF-8
