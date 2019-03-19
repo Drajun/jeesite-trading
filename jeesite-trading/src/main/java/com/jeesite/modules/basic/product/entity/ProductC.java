@@ -100,7 +100,7 @@ public class ProductC extends DataEntity<ProductC> {
 	}
 	
 	@NotBlank(message="包装单位不能为空")
-	@Length(min=0, max=1, message="包装单位长度不能超过 1 个字符")
+	@Length(min=0, max=20, message="包装单位长度不能超过 20 个字符")
 	public String getPackageUnit() {
 		return packageUnit;
 	}

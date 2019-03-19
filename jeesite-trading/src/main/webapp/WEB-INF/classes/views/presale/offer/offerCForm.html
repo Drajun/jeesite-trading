@@ -19,7 +19,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('客户')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="customersCId" maxlength="64" class="form-control required"/>
+								<#form:select path="customersCId" maxlength="64" items="${customers}" itemLabel="name" itemValue="id" blankOption="true" class="form-control required" />
 							</div>
 						</div>
 					</div>
@@ -50,7 +50,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('价格条款')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:select path="priceTerm" dictType="trading_price_term" class="form-control required" />
+								<#form:select path="priceTerm" dictType="trading_price_term" blankOption="true" class="form-control required" />
 							</div>
 						</div>
 					</div>
@@ -204,7 +204,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('申请状态')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="statu" maxlength="1" class="form-control required"/>
+								<#form:select path="statu" dictType="sys_apply_status" blankOption="true" maxlength="1" class="form-control required"/>
 							</div>
 						</div>
 					</div>
@@ -214,7 +214,7 @@
 								<span class="required hide">*</span> ${text('审批时间')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
 								<#form:input path="checkTime" readonly="true" maxlength="20" class="form-control Wdate"
-									dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:true});"/>
+									dataFormat="datetime"/>
 							</div>
 						</div>
 					</div>
@@ -225,7 +225,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('审批人')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="checkBy" maxlength="64" class="form-control"/>
+								<#form:input path="checkBy" readonly="true" maxlength="64" class="form-control"/>
 							</div>
 						</div>
 					</div>
@@ -234,7 +234,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('审批备注')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="checkRemarks" maxlength="200" class="form-control"/>
+								<#form:input path="checkRemarks" readonly="true" maxlength="200" class="form-control"/>
 							</div>
 						</div>
 					</div>
@@ -296,43 +296,19 @@ $("#referenceProductCDataGrid").dataGrid({
 		{header:'状态', name:'status', editable:true, hidden:true},
 		{header:'主键', name:'id', editable:true, hidden:true},
 		{header:'${text("报价单ID")}', name:'offerCId.id', editable:true, hidden:true},
-		{header:'${text("货物选择")}', name:'productCId', width:100, 
-			editable:true, edittype:'select', editoptions:{'class':'form-control required',
-				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('')}),
-				itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function(element){
-					$(element).select2().on("change",function(){$(this).valid()});
-				}
+		{header:'${text("样品选择")}', name:'productCId', width:180, 
+			editable:true, edittype:'select', editoptions:{
+				'class':'form-control',
+				dataUrl:'${ctx}/offer/offerC/productList'
 			}
 		},
-		{header:'${text("货物名称")}', name:'name', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}},
-		{header:'${text("货物编码")}', name:'producCode', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}},
 		{header:'${text("单价")}', name:'price', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
 		{header:'${text("数量")}', name:'number', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
-		{header:'${text("总金额")}', name:'totalAmount', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
-		{header:'${text("包装单位")}', name:'packageUnit', width:100, 
-			editable:true, edittype:'select', editoptions:{'class':'form-control',
-				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('trading_package_unit')}),
-				itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function(element){
-					$(element).select2().on("change",function(){$(this).valid()});
-				}
-			}
-		},
-		{header:'${text("净重")}', name:'netWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
 		{header:'${text("毛重")}', name:'grossWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
-		{header:'${text("规格")}', name:'spec', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'200', 'class':'form-control'}},
-		{header:'${text("每箱件数")}', name:'perBoxNum', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control digits'}},
-		{header:'${text("外箱尺寸")}', name:'ctnsMeasrure', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}},
-		{header:'${text("单个包装方式")}', name:'singlePackageType', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}},
-		{header:'${text("内包装方式")}', name:'innerPackageType', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}},
-		{header:'${text("生产厂商")}', name:'factoryCId', width:100, 
-			editable:true, edittype:'select', editoptions:{'class':'form-control',
-				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('')}),
-				itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function(element){
-					$(element).select2().on("change",function(){$(this).valid()});
-				}
-			}
-		},
+		{header:'${text("净重")}', name:'netWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
 		{header:'${text("备注信息")}', name:'remarks', width:150, editable:true, edittype:'textarea', editoptions:{'maxlength':'500', 'class':'form-control', 'rows':'1'}},
+		{header:'${text("样品编码")}', name:'producCode', width:150, editable:false, edittype:'text'},
+		{header:'${text("规格")}', name:'spec', width:180, editable:false, edittype:'textarea'},
 		{header:'${text("操作")}', name:'actions', width:80, sortable:false, fixed:true, formatter: function(val, obj, row, act){
 			var actions = [];
 			if (val == 'new'){
@@ -359,6 +335,7 @@ $("#referenceProductCDataGrid").dataGrid({
 		
 	}
 });
+
 </script>
 <script>
 $("#inputForm").validate({

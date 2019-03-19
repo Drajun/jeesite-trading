@@ -13,6 +13,8 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.presale.offer.entity.OfferC;
 import com.jeesite.modules.presale.offer.dao.OfferCDao;
+import com.jeesite.modules.basic.product.dao.ProductCDao;
+import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.file.utils.FileUploadUtils;
 import com.jeesite.modules.presale.offer.entity.ReferenceProductC;
 import com.jeesite.modules.presale.offer.dao.ReferenceProductCDao;
@@ -28,6 +30,9 @@ public class OfferCService extends CrudService<OfferCDao, OfferC> {
 	
 	@Autowired
 	private ReferenceProductCDao referenceProductCDao;
+	
+	@Autowired
+	private ProductCDao productDao;
 	
 	/**
 	 * 获取单条数据
@@ -72,6 +77,11 @@ public class OfferCService extends CrudService<OfferCDao, OfferC> {
 		for (ReferenceProductC referenceProductC : offerC.getReferenceProductCList()){
 			if (!ReferenceProductC.STATUS_DELETE.equals(referenceProductC.getStatus())){
 				referenceProductC.setOfferCId(offerC);
+
+				ProductC product = productDao.get(new ProductC(referenceProductC.getProductCId()));
+				referenceProductC.setName(product.getName());
+				referenceProductC.setProducCode(product.getProductCode());
+				referenceProductC.setSpec(product.getSpec());
 				if (referenceProductC.getIsNewRecord()){
 					referenceProductC.preInsert();
 					referenceProductCDao.insert(referenceProductC);

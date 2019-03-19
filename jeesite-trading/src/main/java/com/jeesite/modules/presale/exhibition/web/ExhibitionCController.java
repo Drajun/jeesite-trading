@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.presale.exhibition.entity.ExhibitionC;
 import com.jeesite.modules.presale.exhibition.service.ExhibitionCService;
 import com.jeesite.modules.sys.entity.User;
+import com.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 展会管理Controller
@@ -118,7 +120,9 @@ public class ExhibitionCController extends BaseController {
 	@RequiresPermissions("exhibition:exhibitionC:edit")
 	@PostMapping(value = "checkSave")
 	@ResponseBody
-	public String checkSave(@Validated ExhibitionC exhibitionC,User user) {
+	public String checkSave(@Validated ExhibitionC exhibitionC) {
+		User user = UserUtils.getUser();
+		//User user =  (User)SecurityUtils.getSubject().getPrincipal();
 		if(exhibitionC.getStatu().equals("3")||exhibitionC.getStatu().equals("4")){
 			exhibitionC.setCheckBy(user.getUserName());
 			exhibitionC.setCheckTime(new Date());

@@ -3,7 +3,9 @@
  */
 package com.jeesite.modules.presale.offer.web;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,9 +23,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.basic.customers.entity.CustomersC;
+import com.jeesite.modules.basic.customers.service.CustomersCService;
+import com.jeesite.modules.basic.product.entity.ProductC;
+import com.jeesite.modules.basic.product.service.ProductCService;
 import com.jeesite.modules.presale.offer.entity.OfferC;
+import com.jeesite.modules.presale.offer.entity.ReferenceProductC;
 import com.jeesite.modules.presale.offer.service.OfferCService;
 import com.jeesite.modules.sys.entity.User;
+import com.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 报价管理Controller
@@ -36,6 +44,12 @@ public class OfferCController extends BaseController {
 
 	@Autowired
 	private OfferCService offerCService;
+	
+	@Autowired
+	private CustomersCService customersCService; 
+	
+	@Autowired
+	private ProductCService productCService;
 	
 	/**
 	 * 获取数据
@@ -83,8 +97,42 @@ public class OfferCController extends BaseController {
 	@RequiresPermissions("offer:offerC:view")
 	@RequestMapping(value = "form")
 	public String form(OfferC offerC, Model model) {
+		//客户列表
+		CustomersC customer = new CustomersC();
+		List<CustomersC> customers =  customersCService.findList(customer);
+		
 		model.addAttribute("offerC", offerC);
+		model.addAttribute("customers", customers);
 		return "presale/offer/offerCForm";
+	}
+
+	/**
+	 * 产品列表（样品）
+	 */
+	@RequiresPermissions("offer:offerC:view")
+	@RequestMapping(value = "productList")
+	public void productSelect(HttpServletResponse response){
+		ProductC product = new ProductC();
+		List<ProductC> products = productCService.findList(product);
+		response.setCharacterEncoding("UTF-8");
+		StringBuilder cust = new StringBuilder();
+		cust.append("<select>");
+		cust.append("<option value=></option>");
+		for(ProductC c : products){
+			cust.append("<option value=");
+			cust.append(c.getId());
+			cust.append(">");
+			cust.append(c.getName());
+			cust.append("</option>");
+		}
+		cust.append("</select>");
+		
+		try {
+			response.getWriter().write(cust.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -93,7 +141,11 @@ public class OfferCController extends BaseController {
 	@RequiresPermissions("offer:offerC:view")
 	@RequestMapping(value = "checkForm")
 	public String checkForm(OfferC offerC, Model model) {
+		CustomersC customer = new CustomersC();
+		List<CustomersC> customers =  customersCService.findList(customer);
+		
 		model.addAttribute("offerC", offerC);
+		model.addAttribute("customers", customers);
 		return "presale/offerCheck/offerCForm";
 	}
 
@@ -118,8 +170,9 @@ public class OfferCController extends BaseController {
 	@RequiresPermissions("offer:offerC:edit")
 	@PostMapping(value = "checkSave")
 	@ResponseBody
-	public String checkSave(@Validated OfferC offerC, User user) {
+	public String checkSave(@Validated OfferC offerC) {
 		if(offerC.getStatu().equals("3")||offerC.getStatu().equals("4")){
+			User user = UserUtils.getUser();
 			offerC.setCheckBy(user.getUserName());
 			offerC.setCheckTime(new Date());
 			offerCService.save(offerC);

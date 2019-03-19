@@ -3,6 +3,9 @@
  */
 package com.jeesite.modules.basic.customers.web;
 
+import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,7 +66,7 @@ public class CustomersCController extends BaseController {
 		Page<CustomersC> page = customersCService.findPage(customersC);
 		return page;
 	}
-
+	
 	/**
 	 * 查看编辑表单
 	 */
