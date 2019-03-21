@@ -1,0 +1,140 @@
+<% layout('/layouts/default.html', {title: '寄样管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('寄样管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('send:sendSpecimenC:edit')){ %>
+					<a href="${ctx}/send/sendSpecimenC/form" class="btn btn-default btnTool" title="${text('新增寄样')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${sendSpecimenC}" action="${ctx}/send/sendSpecimenC/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('寄样时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="sendTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('寄送地址')}：</label>
+					<div class="control-inline">
+						<#form:input path="address" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('物流单号')}：</label>
+					<div class="control-inline">
+						<#form:input path="logisticsBill" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('总金额')}：</label>
+					<div class="control-inline">
+						<#form:input path="totalAmount" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('预计送达')}：</label>
+					<div class="control-inline">
+						<#form:input path="preArriveTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('收货时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="takeGoodsTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('客户评价')}：</label>
+					<div class="control-inline">
+						<#form:input path="cusComment" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批人')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkBy" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批备注')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkRemarks" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("寄样时间")}', name:'sendTime', index:'a.send_time', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/send/sendSpecimenC/form?id='+row.id+'" class="btnList" data-title="${text("编辑寄样")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("寄送地址")}', name:'address', index:'a.address', width:150, align:"left"},
+		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
+		{header:'${text("预计送达")}', name:'preArriveTime', index:'a.pre_arrive_time', width:150, align:"center"},
+		{header:'${text("物流单号")}', name:'logisticsBill', index:'a.logistics_bill', width:150, align:"left"},
+		{header:'${text("收货时间")}', name:'takeGoodsTime', index:'a.take_goods_time', width:150, align:"center"},
+		{header:'${text("客户评价")}', name:'cusComment', index:'a.cus_comment', width:150, align:"left"},
+		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
+		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
+		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
+		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_apply_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('send:sendSpecimenC:edit')){ %>
+				actions.push('<a href="${ctx}/send/sendSpecimenC/form?id='+row.id+'" class="btnList" title="${text("编辑寄样")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				if (row.status == Global.STATUS_NORMAL){
+					actions.push('<a href="${ctx}/send/sendSpecimenC/disable?id='+row.id+'" class="btnList" title="${text("停用寄样")}" data-confirm="${text("确认要停用该寄样吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
+				}
+				if (row.status == Global.STATUS_DISABLE){
+					actions.push('<a href="${ctx}/send/sendSpecimenC/enable?id='+row.id+'" class="btnList" title="${text("启用寄样")}" data-confirm="${text("确认要启用该寄样吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
+				}
+				actions.push('<a href="${ctx}/send/sendSpecimenC/delete?id='+row.id+'" class="btnList" title="${text("删除寄样")}" data-confirm="${text("确认要删除该寄样吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

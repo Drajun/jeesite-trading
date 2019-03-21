@@ -3,7 +3,7 @@
 	<div class="box box-main">
 		<div class="box-header with-border">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text(offerC.isNewRecord ? '报价审批' : '编辑报价')}
+				<i class="fa fa-list-alt"></i> ${text(offerC.isNewRecord ? '报价审批' : '审批报价')}
 			</div>
 			<div class="box-tools pull-right">
 				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -149,7 +149,7 @@
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">
-								<span class="required hide">*</span> ${text('出口税率')}：<i class="fa icon-question hide"></i></label>
+								<span class="required hide">*</span> ${text('出口税率(%)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
 								<#form:input path="exportTax" readonly="true" class="form-control number"/>
 							</div>
@@ -160,7 +160,7 @@
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">
-								<span class="required hide">*</span> ${text('退税率')}：<i class="fa icon-question hide"></i></label>
+								<span class="required hide">*</span> ${text('退税率(%)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
 								<#form:input path="returnTax" readonly="true" class="form-control number"/>
 							</div>
@@ -272,13 +272,13 @@ $("#referenceProductCDataGrid").dataGrid({
 		{header:'状态', name:'status', editable:true, hidden:true},
 		{header:'主键', name:'id', editable:true, hidden:true},
 		{header:'${text("报价单ID")}', name:'offerCId.id', editable:true, hidden:true},
-		{header:'${text("样品名称")}', name:'name', width:180, editable:false, edittype:'text'},
+		{header:'${text("货物名称")}', name:'name', width:180, editable:false, edittype:'text'},
 		{header:'${text("单价")}', name:'price', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control number'}},
 		{header:'${text("数量")}', name:'number', width:150, editable:false, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
-		{header:'${text("毛重")}', name:'grossWeight', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control required number'}},
-		{header:'${text("净重")}', name:'netWeight', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("毛重(kg)")}', name:'grossWeight', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("净重(kg)")}', name:'netWeight', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control required number'}},
 		{header:'${text("备注信息")}', name:'remarks', width:150, editable:false, edittype:'textarea', editoptions:{'maxlength':'500', 'class':'form-control', 'rows':'1'}},
-		{header:'${text("样品编码")}', name:'producCode', width:150, editable:false, edittype:'text'},
+		{header:'${text("货物编码")}', name:'producCode', width:150, editable:false, edittype:'text'},
 		{header:'${text("规格")}', name:'spec', width:180, editable:false, edittype:'textarea'},
 		{header:'${text("操作")}', name:'actions', width:80, sortable:false, fixed:true, formatter: function(val, obj, row, act){
 			var actions = [];

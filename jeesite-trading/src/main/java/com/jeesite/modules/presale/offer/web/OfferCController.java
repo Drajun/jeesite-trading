@@ -100,14 +100,18 @@ public class OfferCController extends BaseController {
 		//客户列表
 		CustomersC customer = new CustomersC();
 		List<CustomersC> customers =  customersCService.findList(customer);
-		
-		model.addAttribute("offerC", offerC);
 		model.addAttribute("customers", customers);
+		
+		//剔除不属于报价的货物
+		if(offerC!=null&&offerC.getId()!=null&&!offerC.getId().isEmpty()){
+			offerC.getReferenceProductCList().removeIf(list->list.getOfferCId()==null||!list.getOfferCId().getId().equals(offerC.getId()));			
+		}
+		model.addAttribute("offerC", offerC);		
 		return "presale/offer/offerCForm";
 	}
 
 	/**
-	 * 产品列表（样品）
+	 * 产品列表（货物）
 	 */
 	@RequiresPermissions("offer:offerC:view")
 	@RequestMapping(value = "productList")
@@ -143,9 +147,13 @@ public class OfferCController extends BaseController {
 	public String checkForm(OfferC offerC, Model model) {
 		CustomersC customer = new CustomersC();
 		List<CustomersC> customers =  customersCService.findList(customer);
-		
-		model.addAttribute("offerC", offerC);
 		model.addAttribute("customers", customers);
+		
+		//剔除不属于报价的货物
+		if(offerC!=null&&offerC.getId()!=null&&!offerC.getId().isEmpty()){
+			offerC.getReferenceProductCList().removeIf(list->list.getOfferCId()==null||!list.getOfferCId().getId().equals(offerC.getId()));			
+		}
+		model.addAttribute("offerC", offerC);
 		return "presale/offerCheck/offerCForm";
 	}
 
