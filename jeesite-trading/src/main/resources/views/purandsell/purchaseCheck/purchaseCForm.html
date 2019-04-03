@@ -1,0 +1,307 @@
+<% layout('/layouts/default.html', {title: '订购管理', libs: ['validate','fileupload','dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header with-border">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text(purchaseC.isNewRecord ? '审批订购' : '审批订购')}
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+			</div>
+		</div>
+		<#form:form id="inputForm" model="${purchaseC}" action="${ctx}/purchase/purchaseC/checkSave" method="post" class="form-horizontal">
+			<div class="box-body">
+				<div class="form-unit">${text('基本信息')}</div>
+				<#form:hidden path="id"/>
+				<div class="row">
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('签约时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="signTime" readonly="true" maxlength="20" class="form-control Wdate"
+									dataFormat="datetime"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('生产厂商')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select disabled="disabled" path="factoryId" items="${factoryList}" itemLabel="fullName" itemValue="id" blankOption="true" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required hide">*</span> ${text('签约地址')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10">
+								<#form:input readonly="true" path="signAddr" maxlength="200" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('价格条款')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select disabled="disabled" path="priceTerm" blankOption="true" dictType="trading_price_term" class="form-control required" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('付款时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="paymentTime" readonly="true" maxlength="20" class="form-control Wdate"
+									dataFormat="datetime"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required hide">*</span> ${text('违约条款')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10">
+								<#form:textarea readonly="true" path="breachContract" maxlength="200" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('总金额')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input readonly="true" path="totalAmount" class="form-control required number"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('发货时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="deliveryTime" readonly="true" maxlength="20" class="form-control Wdate required"
+									dataFormat="datetime"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('运输方式')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select disabled="disabled" path="transportWay" blankOption="true" dictType="trading_transport_way" class="form-control required" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('起始地')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input readonly="true" path="startAddr" maxlength="64" class="form-control required"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('目的地')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input readonly="true" path="endAddr" maxlength="64" class="form-control required"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('支付条款')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select disabled="disabled" path="paymentTerm" blankOption="true" dictType="trading_paymentterrms" class="form-control required" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required ">*</span> ${text('保险条款')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10">
+								<#form:textarea readonly="true" path="insuranceTerm" maxlength="200" class="form-control required"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('销售状态')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select path="statu" dictType="trading_sale_status" blankOption="true" class="form-control required" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required hide">*</span> ${text('审批备注')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10">
+								<#form:textarea path="checkRemarks" maxlength="200" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2" title="">
+								<span class="required hide">*</span> ${text('备注信息')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-10">
+								<#form:textarea readonly="true" path="remarks" rows="4" maxlength="500" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2">${text('图片上传')}：</label>
+							<div class="col-sm-10">
+								<#form:fileupload id="uploadImage" bizKey="${purchaseC.id}" bizType="purchaseC_image"
+									uploadType="image" class="" readonly="true"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-2">${text('附件上传')}：</label>
+							<div class="col-sm-10">
+								<#form:fileupload id="uploadFile" bizKey="${purchaseC.id}" bizType="purchaseC_file"
+									uploadType="all" class="" readonly="true"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<h4 class="form-unit">${text('相关货物')}</h4>
+				<div class="ml10 mr10">
+					<table id="purProductCDataGrid"></table>
+					<% if (hasPermi('purchase:purchaseC:edit')){ %>
+						<a href="#" id="purProductCDataGridAddRowBtn" class="btn btn-primary btn-sm mt10 mb10"><i class="fa fa-plus"></i> ${text('增行')}</a>
+					<% } %>
+				</div>
+			</div>
+			<div class="box-footer">
+				<div class="row">
+					<div class="col-sm-offset-2 col-sm-10">
+						<% if (hasPermi('purchase:purchaseC:edit')){ %>
+							<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('保 存')}</button>&nbsp;
+						<% } %>
+						<button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
+					</div>
+				</div>
+			</div>
+		</#form:form>
+	</div>
+</div>
+<% } %>
+<script>
+//初始化相关货物DataGrid对象
+$("#purProductCDataGrid").dataGrid({
+
+	data: ${toJson(purchaseC.purProductCList)},
+	datatype: "local", // 设置本地数据
+	autoGridHeight: function(){return 'auto'}, // 设置自动高度
+	
+	// 设置数据表格列
+	columnModel: [
+		{header:'状态', name:'status', editable:true, hidden:true},
+		{header:'主键', name:'id', editable:true, hidden:true},
+		{header:'${text("寄样单ID")}', name:'contractCId.id', editable:true, hidden:true},
+		{header:'${text("货物名称")}', name:'name', width:100, editable:false, edittype:'text', editoptions:{'class':'form-control'}},
+		{header:'${text("单价")}', name:'price', width:100, editable:false, edittype:'text', editoptions:{'class':'form-control number'}},
+		{header:'${text("数量")}', name:'number', width:100, editable:false, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
+		{header:'${text("总金额")}', name:'totalAmount', width:120, editable:false, edittype:'text', editoptions:{'class':'form-control number'}},
+		{header:'${text("包装单位")}', name:'packageUnit', width:100, 
+			editable:false, edittype:'select', editoptions:{'class':'form-control',
+				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('trading_package_unit')}),
+				itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function(element){
+					$(element).select2().on("change",function(){$(this).valid()});
+				}
+			}
+		},
+		{header:'${text("净重")}', name:'netWeight', width:100, editable:false, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("毛重")}', name:'grossWeight', width:100, editable:false, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("规格")}', name:'spec', width:150, editable:false, edittype:'text', editoptions:{'maxlength':'200', 'class':'form-control'}},
+		{header:'${text("单件包装方式")}', name:'singlePackageType', width:160, 
+			editable:false, edittype:'select', editoptions:{'class':'form-control',
+				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('trading_single_package')}),
+				itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function(element){
+					$(element).select2().on("change",function(){$(this).valid()});
+				}
+			}
+		},
+		{header:'${text("内包装方式")}', name:'innerPackageType', width:160, 
+			editable:false, edittype:'select', editoptions:{'class':'form-control',
+				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('trading_single_package')}),
+				itemLabel: 'dictLabel', itemValue: 'dictValue', dataInit: function(element){
+					$(element).select2().on("change",function(){$(this).valid()});
+				}
+			}
+		},
+		{header:'${text("备注信息")}', name:'remarks', width:150, editable:false, edittype:'textarea', editoptions:{'maxlength':'500', 'class':'form-control', 'rows':'1'}},
+		{header:'${text("货物编码")}', name:'producCode', width:150, editable:false, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}}
+	],
+	
+	// 编辑表格参数
+	editGrid: true,				// 是否是编辑表格
+	editGridInitRowNum: 1,		// 编辑表格的初始化新增行数
+	editGridAddRowBtn: $('#purProductCDataGridAddRowBtn'),	// 子表增行按钮
+	editGridAddRowInitData: {id: '', status: Global.STATUS_NORMAL},	// 新增行的时候初始化的数据
+	
+	// 编辑表格的提交数据参数
+	editGridInputFormListName: 'purProductCList', // 提交的数据列表名
+	editGridInputFormListAttrs: 'status,id,contractCId.id,productCId,name,producCode,price,number,totalAmount,packageUnit,netWeight,grossWeight,spec,perBoxNum,ctnsMeasrure,singlePackageType,innerPackageType,factoryCId,createBy,createDate,updateBy,updateDate,remarks,statu,tabletype,', // 提交数据列表的属性字段
+	
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>
+<script>
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			if(data.result == Global.TRUE){
+				js.closeCurrentTabPage(function(contentWindow){
+					contentWindow.page();
+				});
+			}
+		}, "json");
+    }
+});
+</script>

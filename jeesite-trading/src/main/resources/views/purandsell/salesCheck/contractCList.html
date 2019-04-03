@@ -1,0 +1,152 @@
+<% layout('/layouts/default.html', {title: '销售合同管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('销售合同管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${contractC}" action="${ctx}/sales/contractC/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('合同编码')}：</label>
+					<div class="control-inline">
+						<#form:input path="contractCode" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('签约时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="signTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('签约地址')}：</label>
+					<div class="control-inline">
+						<#form:input path="signAddr" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('违约条款')}：</label>
+					<div class="control-inline">
+						<#form:input path="breachContract" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('总金额')}：</label>
+					<div class="control-inline">
+						<#form:input path="totalAmount" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('装运时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="shipmentTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('起始地')}：</label>
+					<div class="control-inline">
+						<#form:input path="startAddr" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('目的地')}：</label>
+					<div class="control-inline">
+						<#form:input path="endAddr" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('付款方式')}：</label>
+					<div class="control-inline">
+						<#form:input path="paymentTerm" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('付款截止')}：</label>
+					<div class="control-inline">
+						<#form:input path="paymentTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("合同编码")}', name:'contractCode', index:'a.contract_code', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/sales/contractC/checkForm?id='+row.id+'" class="btnList" data-title="${text("审批销售")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("签约时间")}', name:'signTime', index:'a.sign_time', width:150, align:"center"},
+		{header:'${text("价格条款")}', name:'priceTerm', index:'a.price_term', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_price_term')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
+		{header:'${text("装运时间")}', name:'shipmentTime', index:'a.shipment_time', width:150, align:"center"},
+		{header:'${text("运输方式")}', name:'transportWay', index:'a.transport_way', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_transport_way')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("起始地")}', name:'startAddr', index:'a.start_addr', width:150, align:"left"},
+		{header:'${text("目的地")}', name:'endAddr', index:'a.end_addr', width:150, align:"left"},
+		{header:'${text("付款方式")}', name:'paymentTerm', index:'a.payment_term', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_paymentterrms')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("付款截止")}', name:'paymentTime', index:'a.payment_time', width:150, align:"center"},
+		{header:'${text("销售状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('sales:contractC:edit')){ %>
+				actions.push('<a href="${ctx}/sales/contractC/form?id='+row.id+'" class="btnList" title="${text("编辑销售合同")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				if (row.status == Global.STATUS_NORMAL){
+					actions.push('<a href="${ctx}/sales/contractC/disable?id='+row.id+'" class="btnList" title="${text("停用销售合同")}" data-confirm="${text("确认要停用该销售合同吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
+				}
+				if (row.status == Global.STATUS_DISABLE){
+					actions.push('<a href="${ctx}/sales/contractC/enable?id='+row.id+'" class="btnList" title="${text("启用销售合同")}" data-confirm="${text("确认要启用该销售合同吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
+				}
+				actions.push('<a href="${ctx}/sales/contractC/delete?id='+row.id+'" class="btnList" title="${text("删除销售合同")}" data-confirm="${text("确认要删除该销售合同吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

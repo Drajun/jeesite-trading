@@ -111,7 +111,7 @@ public class SendSpecimenCController extends BaseController {
 	/**
 	 * 产品列表（货物）
 	 */
-	@RequiresPermissions("offer:offerC:view")
+	@RequiresPermissions("send:sendSpecimenC:view")
 	@RequestMapping(value = "productList")
 	public void productSelect(HttpServletResponse response){
 		ProductC product = new ProductC();

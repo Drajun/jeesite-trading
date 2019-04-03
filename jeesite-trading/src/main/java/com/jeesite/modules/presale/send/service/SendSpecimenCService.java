@@ -79,7 +79,8 @@ public class SendSpecimenCService extends CrudService<SendSpecimenCDao, SendSpec
 				referenceProductC.setName(product.getName());
 				referenceProductC.setProducCode(product.getProductCode());
 				referenceProductC.setSpec(product.getSpec());
-				referenceProductC.setTabletype("寄养管理");
+				referenceProductC.setTotalAmount(referenceProductC.getPrice()*(double)referenceProductC.getNumber());
+				referenceProductC.setTabletype("寄样管理");
 				if (referenceProductC.getIsNewRecord()){
 					referenceProductC.preInsert();
 					referenceProductCDao.insert(referenceProductC);

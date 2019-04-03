@@ -217,7 +217,7 @@ $("#referenceProductCDataGrid").dataGrid({
 		},
 		{header:'${text("单价")}', name:'price', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
 		{header:'${text("数量")}', name:'number', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
-		{header:'${text("总金额")}', name:'totalAmount', width:120, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
+		{header:'${text("总金额")}', name:'totalAmount', width:120, editable:false, edittype:'text', editoptions:{'class':'form-control number'}},
 		{header:'${text("包装单位")}', name:'packageUnit', width:100, 
 			editable:true, edittype:'select', editoptions:{'class':'form-control',
 				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('trading_package_unit')}),
