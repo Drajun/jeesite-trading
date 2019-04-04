@@ -205,7 +205,7 @@ public class PurchaseCController extends BaseController {
 		List<FactoryC> factoryList = factoryCService.findList(factory);
 		model.addAttribute("factoryList", factoryList);
 		
-		//剔除不属于报价的货物
+		//剔除不属于订购的货物
 		if(purchaseC!=null&&purchaseC.getId()!=null&&!purchaseC.getId().isEmpty()){
 			purchaseC.getPurProductCList().removeIf(list->list.getContractCId()==null||!list.getContractCId().getId().equals(purchaseC.getId()));			
 		}

@@ -75,7 +75,7 @@ public class PurchaseCService extends CrudService<PurchaseCDao, PurchaseC> {
 		// 保存 PurchaseC子表
 		for (PurProductC purProductC : purchaseC.getPurProductCList()){
 			if (!PurProductC.STATUS_DELETE.equals(purProductC.getStatus())){
-				if(purProductC.getContractCId()!=null&&purProductC.getContractCId().getId()!=null&&!purProductC.getTabletype().equals("订购合同"))
+				if(purProductC.getContractCId()!=null&&purProductC.getContractCId().getId()!=null&&!purProductC.getTabletype().equals("订购合同")&&!purProductC.getContractCId().getId().equals(purchaseC.getId()))
 					continue;
 				
 				purProductC.setContractCId(purchaseC);

@@ -1,27 +1,25 @@
 /**
  * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
  */
-package com.jeesite.modules.purandsell.sales.entity;
+package com.jeesite.modules.logistics.consign.entity;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.NotNull;
 
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
-import com.jeesite.modules.purandsell.purchase.entity.PurchaseC;
 
 /**
- * 销售合同Entity
+ * 托运管理Entity
  * @author longlou.d@foxmail.com
- * @version 2019-03-21
+ * @version 2019-04-03
  */
 @Table(name="reference_product_c", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
-		@Column(name="reference_id", attrName="contractCId.id", label="寄样单ID", isQuery=false),
+		@Column(name="reference_id", attrName="consignCId.id", label="托运单ID", isQuery=false),
 		@Column(name="product_c_id", attrName="productCId", label="货物选择", isQuery=false),
 		@Column(name="name", attrName="name", label="货物名称", isQuery=false),
 		@Column(name="produc_code", attrName="producCode", label="货物编码", queryType=QueryType.LIKE),
@@ -42,10 +40,10 @@ import com.jeesite.modules.purandsell.purchase.entity.PurchaseC;
 		@Column(name="tabletype", attrName="tabletype", label="tabletype", isQuery=false),
 	}, orderBy="a.create_date ASC"
 )
-public class SaleProductC extends DataEntity<SaleProductC> {
+public class ConsignProductC extends DataEntity<ConsignProductC> {
 	
 	private static final long serialVersionUID = 1L;
-	private ContractC contractCId;		// 寄样单ID 父类
+	private ConsignC consignCId;		// 托运单ID 父类
 	private String productCId;		// 货物选择
 	private String name;		// 货物名称
 	private String producCode;		// 货物编码
@@ -64,21 +62,21 @@ public class SaleProductC extends DataEntity<SaleProductC> {
 	private String statu;		// 货物状态
 	private String tabletype;		// tabletype
 	
-	public SaleProductC(){
+	public ConsignProductC() {
 		this(null);
 	}
+
+
+	public ConsignProductC(ConsignC consignCId){
+		this.consignCId = consignCId;
+	}
 	
-	public SaleProductC(ContractC contractCId){
-		this.contractCId = contractCId;
+	public ConsignC getConsignCId() {
+		return consignCId;
 	}
 
-	
-	public ContractC getContractCId() {
-		return contractCId;
-	}
-
-	public void setContractCId(ContractC contractCId) {
-		this.contractCId = contractCId;
+	public void setConsignCId(ConsignC consignCId) {
+		this.consignCId = consignCId;
 	}
 	
 	@NotBlank(message="货物选择不能为空")

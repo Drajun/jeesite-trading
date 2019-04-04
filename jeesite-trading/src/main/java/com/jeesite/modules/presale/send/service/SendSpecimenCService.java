@@ -73,6 +73,9 @@ public class SendSpecimenCService extends CrudService<SendSpecimenCDao, SendSpec
 		// 保存 SendSpecimenC子表
 		for (SendProductC referenceProductC : sendSpecimenC.getSendProductCList()){
 			if (!SendProductC.STATUS_DELETE.equals(referenceProductC.getStatus())){
+				if(referenceProductC.getSendSpecimenCId()!=null&&referenceProductC.getSendSpecimenCId().getId()!=null&&!referenceProductC.getTabletype().equals("寄样管理")&&!referenceProductC.getSendSpecimenCId().getId().equals(sendSpecimenC.getId()))
+					continue;
+				
 				referenceProductC.setSendSpecimenCId(sendSpecimenC);
 				
 				ProductC product = productDao.get(new ProductC(referenceProductC.getProductCId()));

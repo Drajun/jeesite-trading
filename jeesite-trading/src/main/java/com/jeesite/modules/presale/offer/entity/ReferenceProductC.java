@@ -4,7 +4,9 @@
 package com.jeesite.modules.presale.offer.entity;
 
 import javax.validation.constraints.NotBlank;
+
 import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.NotNull;
 
 import com.jeesite.common.entity.DataEntity;
@@ -35,6 +37,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="single_package_type", attrName="singlePackageType", label="单个包装方式"),
 		@Column(name="inner_package_type", attrName="innerPackageType", label="内包装方式"),
 		@Column(name="factory_c_id", attrName="factoryCId", label="生产厂商", isQuery=false),
+		@Column(name="tabletype", attrName="tabletype", label="tabletype", isQuery=false),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.create_date ASC"
 )
@@ -57,7 +60,18 @@ public class ReferenceProductC extends DataEntity<ReferenceProductC> {
 	private String singlePackageType;		// 单个包装方式
 	private String innerPackageType;		// 内包装方式
 	private String factoryCId;		// 生产厂商
+	private String tabletype;		// 主表类型
 	
+	public String getTabletype() {
+		return tabletype;
+	}
+
+
+	public void setTabletype(String tabletype) {
+		this.tabletype = tabletype;
+	}
+
+
 	public ReferenceProductC() {
 		this(null);
 	}

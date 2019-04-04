@@ -72,7 +72,7 @@ public class ContractCService extends CrudService<ContractCDao, ContractC> {
 		// 保存 ContractC子表				
 		for (SaleProductC saleProductC : contractC.getSaleProductCList()){
 			if (!SaleProductC.STATUS_DELETE.equals(saleProductC.getStatus())){
-				if(saleProductC.getContractCId()!=null&&!saleProductC.getTabletype().equals("销售合同"))
+				if(saleProductC.getContractCId()!=null&&!saleProductC.getTabletype().equals("销售合同")&&!saleProductC.getContractCId().getId().equals(contractC.getId()))
 					continue;
 					
 				saleProductC.setContractCId(contractC);

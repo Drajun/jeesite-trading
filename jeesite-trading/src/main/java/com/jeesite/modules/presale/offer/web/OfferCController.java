@@ -104,7 +104,8 @@ public class OfferCController extends BaseController {
 		
 		//剔除不属于报价的货物
 		if(offerC!=null&&offerC.getId()!=null&&!offerC.getId().isEmpty()){
-			offerC.getReferenceProductCList().removeIf(list->list.getOfferCId()==null||!list.getOfferCId().getId().equals(offerC.getId()));			
+			offerC.getReferenceProductCList().removeIf(list->list.getTabletype()==null||!list.getTabletype().equals("报价管理")
+					||!list.getOfferCId().getId().equals(offerC.getId()));					
 		}
 		model.addAttribute("offerC", offerC);		
 		return "presale/offer/offerCForm";
