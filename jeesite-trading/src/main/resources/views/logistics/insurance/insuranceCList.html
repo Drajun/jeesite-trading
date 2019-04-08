@@ -1,0 +1,176 @@
+<% layout('/layouts/default.html', {title: '保险管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('保险管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('insurance:insuranceC:edit')){ %>
+					<a href="${ctx}/insurance/insuranceC/form" class="btn btn-default btnTool" title="${text('新增保险')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${insuranceC}" action="${ctx}/insurance/insuranceC/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('保险单号')}：</label>
+					<div class="control-inline">
+						<#form:input path="insuranceCode" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('保险公司')}：</label>
+					<div class="control-inline">
+						<#form:input path="insuranceCompany" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('起始时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="startTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('结束时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="endTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('销售合同')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="contractCode" dictType="" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('起始地')}：</label>
+					<div class="control-inline">
+						<#form:input path="startAddr" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('目的地')}：</label>
+					<div class="control-inline">
+						<#form:input path="endAddr" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('主要险别')}：</label>
+					<div class="control-inline">
+						<#form:input path="mainInsurance" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('附加险')}：</label>
+					<div class="control-inline">
+						<#form:input path="extraInsurance" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('保险费率')}：</label>
+					<div class="control-inline">
+						<#form:input path="insuranceRate" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('保险总费')}：</label>
+					<div class="control-inline">
+						<#form:input path="insuranceCost" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('申请状态')}：</label>
+					<div class="control-inline">
+						<#form:input path="statu" maxlength="1" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批人')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkBy" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("销售合同")}', name:'contractCode', index:'a.contract_code', width:180, align:"center", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/insurance/insuranceC/form?id='+row.id+'" class="btnList" data-title="${text("编辑保险")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("保险单号")}', name:'insuranceCode', index:'a.insurance_code', width:150, align:"left"},
+		{header:'${text("保险公司")}', name:'insuranceCompany', index:'a.insurance_company', width:180, align:"left"},
+		{header:'${text("起始时间")}', name:'startTime', index:'a.start_time', width:170, align:"center"},
+		{header:'${text("结束时间")}', name:'endTime', index:'a.end_time', width:170, align:"center"},
+		{header:'${text("保险类型")}', name:'insuranceType', index:'a.insurance_type', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_insurance_type')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("主要险别")}', name:'mainInsurance', index:'a.main_insurance', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_main_insurance')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("附加险")}', name:'extraInsurance', index:'a.extra_insurance', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_extra_insurance')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("保险费率%")}', name:'insuranceRate', index:'a.insurance_rate', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
+		{header:'${text("保险总费")}', name:'insuranceCost', index:'a.insurance_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
+		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
+		{header:'${text("操作")}', name:'actions', width:150, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('insurance:insuranceC:edit')){ %>
+				actions.push('<a href="${ctx}/insurance/insuranceC/form?id='+row.id+'" class="btnList" title="${text("编辑保险")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				if (row.status == Global.STATUS_NORMAL){
+					actions.push('<a href="${ctx}/insurance/insuranceC/disable?id='+row.id+'" class="btnList" title="${text("停用保险")}" data-confirm="${text("确认要停用该保险吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
+				}
+				if (row.status == Global.STATUS_DISABLE){
+					actions.push('<a href="${ctx}/insurance/insuranceC/enable?id='+row.id+'" class="btnList" title="${text("启用保险")}" data-confirm="${text("确认要启用该保险吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
+				}
+				actions.push('<a href="${ctx}/insurance/insuranceC/delete?id='+row.id+'" class="btnList" title="${text("删除保险")}" data-confirm="${text("确认要删除该保险吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

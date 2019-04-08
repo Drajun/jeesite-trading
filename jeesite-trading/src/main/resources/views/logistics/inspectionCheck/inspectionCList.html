@@ -115,7 +115,7 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("报检时间")}', name:'inspectionTime', index:'a.inspection_time', width:180, align:"left", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/inspection/inspectionC/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑报检")}">'+(val||row.id)+'</a>';
+			return '<a href="${ctx}/inspection/inspectionC/checkForm?id='+row.id+'" class="btnList" data-title="${text("审批报检")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("报检编号")}', name:'inspectionCode', index:'a.inspection_code', width:180, align:"left"},
 		{header:'${text("运输方式")}', name:'transportWays', index:'a.transport_ways', width:150, align:"center", formatter: function(val, obj, row, act){

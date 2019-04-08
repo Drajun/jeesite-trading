@@ -3,8 +3,6 @@
  */
 package com.jeesite.modules.purandsell.purchase.web;
 
-import io.swagger.models.Contact;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +29,6 @@ import com.jeesite.modules.basic.factory.entity.FactoryC;
 import com.jeesite.modules.basic.factory.service.FactoryCService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
-import com.jeesite.modules.presale.offer.entity.ReferenceProductC;
 import com.jeesite.modules.purandsell.purchase.entity.PurProductC;
 import com.jeesite.modules.purandsell.purchase.entity.PurchaseC;
 import com.jeesite.modules.purandsell.purchase.service.PurchaseCService;

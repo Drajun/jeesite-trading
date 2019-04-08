@@ -50,7 +50,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('运输方式')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:select disabled="disabled" path="transportWays" blankOption="true" dictType="trading_transport_way" multiple="true" class="form-control required" />
+								<#form:select path="transportWays" blankOption="true" dictType="trading_transport_way" multiple="true" class="form-control required" />
 							</div>
 						</div>
 					</div>
@@ -178,7 +178,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('随附单据')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:select disabled="disabled" path="accessoryDoc" dictType="trading_documents" multiple="true" blankOption="true" class="form-control" />
+								<#form:select path="accessoryDoc" dictType="trading_documents" multiple="true" blankOption="true" class="form-control" />
 							</div>
 						</div>
 					</div>
@@ -230,7 +230,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('申请状态')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:select disabled="disabled" path="statu" dictType="trading_sale_status" blankOption="true" class="form-control required" />
+								<#form:select path="statu" dictType="trading_sale_status" blankOption="true" class="form-control required" />
 							</div>
 						</div>
 					</div>
