@@ -30,6 +30,7 @@ import com.jeesite.modules.basic.factory.service.FactoryCService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
 import com.jeesite.modules.logistics.consign.entity.ConsignC;
+import com.jeesite.modules.logistics.consign.entity.ConsignProductC;
 import com.jeesite.modules.logistics.consign.service.ConsignCService;
 import com.jeesite.modules.purandsell.purchase.entity.PurProductC;
 import com.jeesite.modules.purandsell.purchase.entity.PurchaseC;
@@ -167,11 +168,14 @@ public class ConsignCController extends BaseController {
 	@RequiresPermissions("purchase:purchaseC:view")
 	@RequestMapping("fullProduct")
 	@ResponseBody
-	public List<PurProductC> fullProduct(ConsignC consignC, Model model, @Param("contractId")String contractId){
+	public List<ConsignProductC> fullProduct(ConsignC consignC, Model model, @Param("contractId")String contractId){
+		if(contractId==null||contractId.isEmpty())
+			return null;
+		
 		ContractC contract = new ContractC();
 		contract.setId(contractId);
 		ContractC contractC = contractCService.get(contract);
-		List<PurProductC> products = new ArrayList<PurProductC>();
+		List<ConsignProductC> products = new ArrayList<ConsignProductC>();
 		
 		//剔除非销售管理的货物
 		if(contractC!=null&&contractC.getId()!=null&&!contractC.getId().isEmpty()){
@@ -180,8 +184,8 @@ public class ConsignCController extends BaseController {
 		}
 		
 		for(SaleProductC p : contractC.getSaleProductCList()){
-			PurProductC product = new PurProductC();
-			product.setContractCId(null);
+			ConsignProductC product = new ConsignProductC();
+			product.setConsignCId(null);
 			product.setProductCId(p.getProductCId());
 			product.setProducCode(p.getProducCode());
 			product.setName(p.getName());

@@ -73,7 +73,9 @@ public class ConsignCService extends CrudService<ConsignCDao, ConsignC> {
 		// 保存 ConsignC子表
 		for (ConsignProductC consignProductC : consignC.getConsignProductCList()){
 			if (!ConsignProductC.STATUS_DELETE.equals(consignProductC.getStatus())){
-				if(consignProductC.getConsignCId()!=null&&consignProductC.getConsignCId().getId()!=null&&!consignProductC.getTabletype().equals("托运管理")&&!consignProductC.getConsignCId().getId().equals(consignC.getId()))
+				if(consignProductC.getConsignCId()!=null&&consignProductC.getTabletype()!=null&&!consignProductC.getTabletype().equals("托运管理"))
+					continue;
+				if(consignProductC.getConsignCId()!=null&&consignProductC.getConsignCId().getId()!=null&&!consignProductC.getConsignCId().getId().equals(consignC.getId()))
 					continue;
 
 				consignProductC.setConsignCId(consignC);

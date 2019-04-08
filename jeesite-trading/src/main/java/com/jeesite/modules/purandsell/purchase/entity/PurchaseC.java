@@ -25,7 +25,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
  */
 @Table(name="purchase_c", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
-		@Column(name="sales_contract_id", attrName="salesContractId", label="销售合同", isQuery=false),
+		@Column(name="sales_contract_Code", attrName="salesContractCode", label="销售合同", isQuery=false),
 		@Column(name="contract_code", attrName="contractCode", label="合同编号", isQuery=false),
 		@Column(name="sign_time", attrName="signTime", label="签约时间"),
 		@Column(name="sign_addr", attrName="signAddr", label="签约地址", isQuery=false),
@@ -50,7 +50,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 public class PurchaseC extends DataEntity<PurchaseC> {
 	
 	private static final long serialVersionUID = 1L;
-	private String salesContractId;		// 销售合同
+	private String salesContractCode;		// 销售合同
 	private String contractCode;		// 合同编号
 	private Date signTime;		// 签约时间
 	private String signAddr;		// 签约地址
@@ -80,12 +80,12 @@ public class PurchaseC extends DataEntity<PurchaseC> {
 	}
 	
 	@Length(min=0, max=64, message="销售合同长度不能超过 64 个字符")
-	public String getSalesContractId() {
-		return salesContractId;
+	public String getSalesContractCode() {
+		return salesContractCode;
 	}
 
-	public void setSalesContractId(String salesContractId) {
-		this.salesContractId = salesContractId;
+	public void setSalesContractCode(String salesContractCode) {
+		this.salesContractCode = salesContractCode;
 	}
 	
 	public String getContractCode() {

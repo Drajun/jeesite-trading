@@ -115,10 +115,10 @@ public class PurchaseCController extends BaseController {
 		List<FactoryC> factoryList = factoryCService.findList(factory);
 		model.addAttribute("factoryList", factoryList);
 		
-		//剔除不属于报价的货物
+		//剔除不属于订购的货物
 		if(purchaseC!=null&&purchaseC.getId()!=null&&!purchaseC.getId().isEmpty()){
-			purchaseC.getPurProductCList().removeIf(list->list.getContractCId()==null||!list.getTabletype().equals("订购合同")
-					||!list.getContractCId().getId().equals(purchaseC.getId()));			
+			purchaseC.getPurProductCList().removeIf(list->list.getTabletype()==null||!list.getTabletype().equals("订购合同")
+					||!list.getPurchaseCId().getId().equals(purchaseC.getId()));			
 		}
 		
 		model.addAttribute("purchaseC", purchaseC);
@@ -162,6 +162,9 @@ public class PurchaseCController extends BaseController {
 	@RequestMapping("fullProduct")
 	@ResponseBody
 	public List<PurProductC> fullProduct(PurchaseC purchaseC, Model model, @Param("contractId")String contractId){
+		if(contractId==null||contractId.isEmpty())
+			return null;
+		
 		ContractC contract = new ContractC();
 		contract.setId(contractId);
 		ContractC contractC = contractCService.get(contract);
@@ -175,7 +178,7 @@ public class PurchaseCController extends BaseController {
 		
 		for(SaleProductC p : contractC.getSaleProductCList()){
 			PurProductC product = new PurProductC();
-			product.setContractCId(null);
+			product.setPurchaseCId(null);
 			product.setProductCId(p.getProductCId());
 			product.setProducCode(p.getProducCode());
 			product.setName(p.getName());
@@ -207,7 +210,7 @@ public class PurchaseCController extends BaseController {
 		
 		//剔除不属于订购的货物
 		if(purchaseC!=null&&purchaseC.getId()!=null&&!purchaseC.getId().isEmpty()){
-			purchaseC.getPurProductCList().removeIf(list->list.getContractCId()==null||!list.getContractCId().getId().equals(purchaseC.getId()));			
+			purchaseC.getPurProductCList().removeIf(list->list.getPurchaseCId()==null||!list.getPurchaseCId().getId().equals(purchaseC.getId()));			
 		}
 		
 		model.addAttribute("purchaseC", purchaseC);

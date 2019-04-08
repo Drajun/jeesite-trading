@@ -75,10 +75,12 @@ public class PurchaseCService extends CrudService<PurchaseCDao, PurchaseC> {
 		// 保存 PurchaseC子表
 		for (PurProductC purProductC : purchaseC.getPurProductCList()){
 			if (!PurProductC.STATUS_DELETE.equals(purProductC.getStatus())){
-				if(purProductC.getContractCId()!=null&&purProductC.getContractCId().getId()!=null&&!purProductC.getTabletype().equals("订购合同")&&!purProductC.getContractCId().getId().equals(purchaseC.getId()))
+				if(purProductC.getPurchaseCId()!=null&&purProductC.getTabletype()!=null&&!purProductC.getTabletype().equals("订购合同"))
+					continue;
+				if(purProductC.getPurchaseCId()!=null&&purProductC.getPurchaseCId().getId()!=null&&!purProductC.getPurchaseCId().getId().equals(purchaseC.getId()))
 					continue;
 				
-				purProductC.setContractCId(purchaseC);
+				purProductC.setPurchaseCId(purchaseC);
 				
 				ProductC product = productDao.get(new ProductC(purProductC.getProductCId()));
 				purProductC.setName(product.getName());
@@ -119,7 +121,7 @@ public class PurchaseCService extends CrudService<PurchaseCDao, PurchaseC> {
 	public void delete(PurchaseC purchaseC) {
 		super.delete(purchaseC);
 		PurProductC purProductC = new PurProductC();
-		purProductC.setContractCId(purchaseC);
+		purProductC.setPurchaseCId(purchaseC);
 		purProductCDao.delete(purProductC);
 	}
 	

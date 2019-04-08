@@ -19,7 +19,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
  */
 @Table(name="reference_product_c", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
-		@Column(name="reference_id", attrName="contractCId.id", label="寄样单ID", isQuery=false),
+		@Column(name="reference_id", attrName="purchaseCId.id", label="寄样单ID", isQuery=true),
 		@Column(name="product_c_id", attrName="productCId", label="货物选择", isQuery=false),
 		@Column(name="name", attrName="name", label="货物名称", isQuery=false),
 		@Column(name="produc_code", attrName="producCode", label="货物编码", queryType=QueryType.LIKE),
@@ -43,7 +43,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 public class PurProductC extends DataEntity<PurProductC> {
 	
 	private static final long serialVersionUID = 1L;
-	private PurchaseC contractCId;		// 寄样单ID 父类
+	private PurchaseC purchaseCId;		// 寄样单ID 父类
 	private String productCId;		// 货物选择
 	private String name;		// 货物名称
 	private String producCode;		// 货物编码
@@ -67,16 +67,16 @@ public class PurProductC extends DataEntity<PurProductC> {
 	}
 
 
-	public PurProductC(PurchaseC contractCId){
-		this.contractCId = contractCId;
+	public PurProductC(PurchaseC purchaseCId){
+		this.purchaseCId = purchaseCId;
 	}
 	
-	public PurchaseC getContractCId() {
-		return contractCId;
+	public PurchaseC getPurchaseCId() {
+		return purchaseCId;
 	}
 
-	public void setContractCId(PurchaseC contractCId) {
-		this.contractCId = contractCId;
+	public void setPurchaseCId(PurchaseC purchaseCId) {
+		this.purchaseCId = purchaseCId;
 	}
 	
 	@NotBlank(message="货物选择不能为空")

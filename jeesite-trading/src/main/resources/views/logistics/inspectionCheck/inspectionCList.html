@@ -1,0 +1,148 @@
+<% layout('/layouts/default.html', {title: '报检管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('报检管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${inspectionC}" action="${ctx}/inspection/inspectionC/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('报检编号')}：</label>
+					<div class="control-inline">
+						<#form:input path="inspectionCode" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('报检时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="inspectionTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('合同号')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="contractCode" dictType="" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('输往国家')}：</label>
+					<div class="control-inline width-120" >
+						<#form:treeselect id="district" title="${text('区域选择')}"
+							path="district" labelPath="" 
+							url="${ctx}/sys/area/treeData" allowClear="true"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('起始地')}：</label>
+					<div class="control-inline">
+						<#form:input path="startAddr" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('目的地')}：</label>
+					<div class="control-inline">
+						<#form:input path="endAddr" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('集装箱规格')}：</label>
+					<div class="control-inline">
+						<#form:input path="containerSpec" maxlength="100" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('报检费用')}：</label>
+					<div class="control-inline">
+						<#form:input path="inspectionCost" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('领证时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="takeTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批人')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkBy" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('审批备注')}：</label>
+					<div class="control-inline">
+						<#form:input path="checkRemarks" maxlength="200" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("报检时间")}', name:'inspectionTime', index:'a.inspection_time', width:180, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/inspection/inspectionC/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑报检")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("报检编号")}', name:'inspectionCode', index:'a.inspection_code', width:180, align:"left"},
+		{header:'${text("运输方式")}', name:'transportWays', index:'a.transport_ways', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_transport_way')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("贸易方式")}', name:'tradingWays', index:'a.trading_ways', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_way')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("合同号")}', name:'contractCode', index:'a.contract_code', width:180, align:"center"},
+		{header:'${text("信用证")}', name:'letterCredit', index:'a.letter_credit', width:150, align:"left"},
+		{header:'${text("用途")}', name:'using', index:'a.using', width:150, align:"left"},
+		{header:'${text("输往国家")}', name:'district', index:'a.district', width:150, align:"center"},
+		{header:'${text("报检费用")}', name:'inspectionCost', index:'a.inspection_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
+		{header:'${text("操作员")}', name:'operator', index:'a.operator', width:150, align:"left"},
+		{header:'${text("领证时间")}', name:'takeTime', index:'a.take_time', width:150, align:"center"},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

@@ -426,7 +426,9 @@ $("#inputForm").validate({
 $(function(){
 	$("#contract").select2();
 	$("#contract").on("select2:select",function(){
+	    $('#consignProductCDataGrid').jqGrid('clearGridData');
 		var param = $(this).val();
+		var code = $(this).find("option:selected").text();
 		$.ajax({
 			type:"POST",
 			url:"${ctx}/consign/consignC/fullProduct",
@@ -435,12 +437,11 @@ $(function(){
 			success : function(result) {
 	    		//$("#purProductCDataGrid").datagrid('reload');
 	    		// 重新加载数据
-	    		$('#consignProductCDataGrid').jqGrid('clearGridData');
 	    		$("#consignProductCDataGrid").jqGrid('setGridParam', {
 	    			datatype:"local",
 	    			data:result
 	    		}).trigger("reloadGrid");
-	    		$('#contractCode').val(param);
+	    		$('#contractCode').val(code);
 			}
 		});
 	});

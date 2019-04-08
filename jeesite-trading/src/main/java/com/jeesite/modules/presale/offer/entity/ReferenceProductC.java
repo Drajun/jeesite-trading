@@ -21,7 +21,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
  */
 @Table(name="reference_product_c", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
-		@Column(name="reference_id", attrName="offerCId.id", label="报价单ID", isQuery=false),
+		@Column(name="reference_id", attrName="offerCId.id", label="报价单ID", isQuery=true),
 		@Column(name="product_c_id", attrName="productCId", label="货物选择", isQuery=false),
 		@Column(name="name", attrName="name", label="货物名称", queryType=QueryType.LIKE),
 		@Column(name="produc_code", attrName="producCode", label="货物编码", queryType=QueryType.LIKE),

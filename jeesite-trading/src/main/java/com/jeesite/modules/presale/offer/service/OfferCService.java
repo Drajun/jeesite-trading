@@ -76,7 +76,9 @@ public class OfferCService extends CrudService<OfferCDao, OfferC> {
 		// 保存 OfferC子表
 		for (ReferenceProductC referenceProductC : offerC.getReferenceProductCList()){
 			if (!ReferenceProductC.STATUS_DELETE.equals(referenceProductC.getStatus())){
-				if(referenceProductC.getOfferCId()!=null&&referenceProductC.getOfferCId().getId()!=null&&!referenceProductC.getTabletype().equals("报价管理")&&!referenceProductC.getOfferCId().getId().equals(offerC.getId()))
+				if(referenceProductC.getOfferCId()!=null&&referenceProductC.getTabletype()!=null&&!referenceProductC.getTabletype().equals("报价管理"))
+					continue;
+				if(referenceProductC.getOfferCId()!=null&&referenceProductC.getOfferCId().getId()!=null&&!referenceProductC.getOfferCId().getId().equals(offerC.getId()))
 					continue;
 				
 				referenceProductC.setOfferCId(offerC);
