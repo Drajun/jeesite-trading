@@ -1,0 +1,167 @@
+<% layout('/layouts/default.html', {title: '报关管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('报关管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('customs:customsC:edit')){ %>
+					<a href="${ctx}/customs/customsC/form" class="btn btn-default btnTool" title="${text('新增报关')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${customsC}" action="${ctx}/customs/customsC/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('委托时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="entrustTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('经办人')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="operator" dictType="" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('船名航次')}：</label>
+					<div class="control-inline">
+						<#form:input path="transportationName" maxlength="100" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('合同编号')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="contractCode" dictType="" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('代理单位')}：</label>
+					<div class="control-inline">
+						<#form:input path="agencyCompany" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('代理单位编号')}：</label>
+					<div class="control-inline">
+						<#form:input path="agencyNum" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('联系电话')}：</label>
+					<div class="control-inline">
+						<#form:input path="telephone" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('委托费用')}：</label>
+					<div class="control-inline">
+						<#form:input path="entrustCost" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('代理人姓名')}：</label>
+					<div class="control-inline">
+						<#form:input path="agencyName" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('报关单号')}：</label>
+					<div class="control-inline">
+						<#form:input path="customsNum" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('报关时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="customsTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('放行时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="allowDate" readonly="true" maxlength="20" class="form-control Wdate-datetime"
+							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('申请状态')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="statu" dictType="trading_sale_status" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("委托时间")}', name:'entrustTime', index:'a.entrust_time', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/customs/customsC/form?id='+row.id+'" class="btnList" data-title="${text("编辑报关")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("委托书编号")}', name:'entrustCode', index:'a.entrust_code', width:150, align:"center"},
+		{header:'${text("是否代缴税款")}', name:'isScottare', index:'a.is_scottare', width:180, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_yes_no')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("是否退税")}', name:'isDrawback', index:'a.is_drawback', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_yes_no')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("合同编号")}', name:'contractCode', index:'a.contract_code', width:150, align:"center"},
+		{header:'${text("代理单位")}', name:'agencyCompany', index:'a.agency_company', width:150, align:"left"},
+		{header:'${text("委托费用")}', name:'entrustCost', index:'a.entrust_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+		}},
+		{header:'${text("代理人姓名")}', name:'agencyName', index:'a.agency_name', width:150, align:"left"},
+		{header:'${text("报关单号")}', name:'customsNum', index:'a.customs_num', width:150, align:"left"},
+		{header:'${text("放行时间")}', name:'allowDate', index:'a.allow_date', width:150, align:"center"},
+		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('customs:customsC:edit')){ %>
+				actions.push('<a href="${ctx}/customs/customsC/form?id='+row.id+'" class="btnList" title="${text("编辑报关")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				if (row.status == Global.STATUS_NORMAL){
+					actions.push('<a href="${ctx}/customs/customsC/disable?id='+row.id+'" class="btnList" title="${text("停用报关")}" data-confirm="${text("确认要停用该报关吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
+				}
+				if (row.status == Global.STATUS_DISABLE){
+					actions.push('<a href="${ctx}/customs/customsC/enable?id='+row.id+'" class="btnList" title="${text("启用报关")}" data-confirm="${text("确认要启用该报关吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
+				}
+				actions.push('<a href="${ctx}/customs/customsC/delete?id='+row.id+'" class="btnList" title="${text("删除报关")}" data-confirm="${text("确认要删除该报关吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>
