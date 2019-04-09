@@ -106,9 +106,9 @@ public class RebillFController extends BaseController {
 	@ResponseBody
 	public String save(@Validated RebillF rebillF) {
 		if(rebillF.getStatu().equals("1")||rebillF.getStatu().equals("0")){
-			//是初次则设置合同编码
+			//是初次则设置收款单编码
 			if(rebillF.getId()==null||rebillF.getId()==""){
-				String code = "RPF"+new Date().getTime()%999999999+"";				
+				String code = "RBF"+new Date().getTime()%999999999+"";				
 				rebillF.setRebillCode(code);
 			}
 			rebillFService.save(rebillF);
