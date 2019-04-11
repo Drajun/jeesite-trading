@@ -1,0 +1,141 @@
+<% layout('/layouts/default.html', {title: '成本管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('成本与收益')}
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="inputForm" action="" method="post" class="form-horizontal">
+				<div class="form-unit">${text('选择日期')}</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('选择日期')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input id="recordDate" path="recordDate" readonly="true" maxlength="20" class="form-control Wdate required"
+									dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy',isShowClear:false,onpicked:calculate});"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</#form:form>	
+			<hr />
+			<!-- 图表内容 -->
+			<div id="benefits" style="width:85%;height:450px;"></div>
+			<hr />
+			<div id="costAndBenefits" style="width:85%;height:450px;"></div>
+			
+			<div class="row">
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label class="control-label col-sm-3" title="">
+							<span class="required ">*</span> ${text('拟合度')}：<i class="fa icon-question hide"></i></label>
+						<div class="col-sm-3">
+							<#form:input id="determinationCoefficient" readonly="true" maxlength="20" class="form-control"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label class="control-label col-sm-3" title="">
+							<span class="required ">*</span> ${text('相关系数')}：<i class="fa icon-question hide"></i></label>
+						<div class="col-sm-3">
+							<#form:input id="correlationCoefficient" readonly="true" maxlength="20" class="form-control"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label class="control-label col-sm-3" title="">
+							<span class="required ">*</span> ${text('回归方程')}：<i class="fa icon-question hide"></i></label>
+						<div class="col-sm-3">
+							<#form:input id="regressionEquation" readonly="true" maxlength="20" class="form-control"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% } %>
+
+<script src="/trading/static/echarts/echarts.min.js"></script>
+<script>
+function calculate(){
+	var date = $('#recordDate').val();
+	//基于准备好的dom，初始化echarts实例
+	var benefitsChart = echarts.init(document.getElementById('benefits'));
+	$.ajax({
+		type:"POST",
+		url:"${ctx}/Data/Data/salesAmountByYearData",
+		data:{'date':date},
+		async:false,
+		success : function(result) {
+			// 销售额配置项和数据
+	        var option = {
+	            title: {
+	            	text: result.year+'年'+'长河商贸各月销售额'
+	            },
+	            tooltip: {},
+	            legend: {
+	            	data:['销售额']
+	            },
+	            xAxis: {
+	            	data: result.name
+	            },
+	            yAxis: {},
+	            series: [{
+	            	name: '销售额',
+	                type: 'line',
+	                data: result.value
+	            }]
+	        };
+	        benefitsChart.setOption(option);
+		}
+	});
+	
+	var costAndBenefitsChar = echarts.init(document.getElementById('costAndBenefits'));
+	$.ajax({
+		type:"POST",
+		url:"${ctx}/Data/Data/costAndBenefitsByYearData",
+		data:{'date':date},
+		async:false,
+		success : function(result) {
+			// 销售额配置项和数据
+			var option = {
+			    title: {
+			    	text: result.year+'年'+'长河商贸各月收益与成本                   '+
+			    		'拟合度：'+result.determinationCoefficient+'    相关系数：'+result.correlationCoefficient+
+			    		'\n回归方程：y='+result.regressionA+'x+'+result.regressionB
+			    },
+			    xAxis: {
+			    	name:'成本'
+			    },
+			    yAxis: {
+			    	name:'收益'
+			    },
+			    series: [{
+			        symbolSize: 15,
+			        data: result.costAndBenefits,
+			        type: 'scatter',
+			        label: {
+			            emphasis: {
+			                show: true,
+			                formatter: function (param) {
+			                    return param.data[2]+'月';
+			                },
+			                position: 'top'
+			            }
+			        },
+			   }]
+			};
+			costAndBenefitsChar.setOption(option);
+		}
+	});	
+}
+
+
+</script>
