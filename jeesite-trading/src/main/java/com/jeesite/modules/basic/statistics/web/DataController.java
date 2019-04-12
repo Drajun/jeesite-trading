@@ -52,14 +52,53 @@ public class DataController extends BaseController{
 		GregorianCalendar calendar = new GregorianCalendar(Integer.parseInt(year), 1, 1);
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
 	    String dateString = formatter.format(calendar.getTime());
-		List<Data> dataList =  dataService.statisticsSalesByYear(dateString);
+		Future<List<Data>> dataList =  dataService.statisticsSalesByYear(dateString);
 		
 		List<String> name = new ArrayList<String>();
 		List<Double> value = new ArrayList<Double>();
 		
-		for(Data d : dataList){
-			name.add(d.getDatetime()+"月");
-			value.add(d.getData());
+		try{
+			for(Data d : dataList.get()){
+				name.add(d.getDatetime()+"月");
+				value.add(d.getData());
+			}
+			model.addAttribute("year", year);
+			model.addAttribute("name", name);
+			model.addAttribute("value", value);
+		}catch(Exception e){
+			e.printStackTrace();
+			model.addAttribute("message", "数据出错");
+		}
+		
+		return model;
+	}
+	
+	/**
+	 * 成本统计
+	 */
+	@RequiresPermissions("Data:Data:view")
+	@RequestMapping(value = {"costByYearData", ""})
+	@ResponseBody
+	public Model costByYearData(Model model, String date){
+		//按年份统计
+		String year = date.split("-")[0];
+		GregorianCalendar calendar = new GregorianCalendar(Integer.parseInt(year), 1, 1);
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		String dateString = formatter.format(calendar.getTime());
+		List<String> name = new ArrayList<String>();
+		List<Double> value = new ArrayList<Double>();
+		
+		try{
+			//获取成本
+			Future<List<Data>> costFuture =  dataService.statisticsCostByYear(dateString);
+			for(Data d : costFuture.get()){
+				name.add(d.getDatetime()+"月");
+				value.add(d.getData());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			model.addAttribute("message", "数据出错");
+			return model;
 		}
 		
 		model.addAttribute("year", year);
@@ -81,25 +120,39 @@ public class DataController extends BaseController{
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
 		String dateString = formatter.format(calendar.getTime());
 		
-		//获取成本与收益值
-		List<Data> costList =  dataService.statisticsCostByYear(dateString);
-		List<Data> benefitList =  dataService.statisticsBenefitsByYear(dateString);
-		
-		//获取实际值
-		List<Double> costDataList = new ArrayList<Double>();
-		List<Double> benefitDataList = new ArrayList<Double>();
-		
-		//封装数据
-		List<List<Double>> costAndBenefits = new ArrayList<List<Double>>();
-		for(int i = 0;i<costList.size()&&i<benefitList.size();i++){
-			List<Double> temp = new ArrayList<Double>();
-			temp.add(costList.get(i).getData());
-			temp.add(benefitList.get(i).getData());
-			temp.add(Double.parseDouble(costList.get(i).getDatetime()));
-			costAndBenefits.add(temp);
+		List<Data> costList;
+		List<Data> benefitList;
+		List<Double> costDataList;
+		List<Double> benefitDataList;
+		List<List<Double>> costAndBenefits;
+		try{
+			//获取成本与收益值
+			Future<List<Data>> costFuture =  dataService.statisticsCostByYear(dateString);
+			Future<List<Data>> beneFuture =  dataService.statisticsBenefitsByYear(dateString);
+			costList = costFuture.get();
+			benefitList = beneFuture.get();
 			
-			costDataList.add(costList.get(i).getData());
-			benefitDataList.add(benefitList.get(i).getData());
+			//获取实际值
+			costDataList = new ArrayList<Double>();
+			benefitDataList = new ArrayList<Double>();
+			
+			//封装数据
+			costAndBenefits = new ArrayList<List<Double>>();
+			for(int i = 0;i<costList.size()&&i<benefitList.size();i++){
+				List<Double> temp = new ArrayList<Double>();
+				temp.add(costList.get(i).getData());
+				temp.add(benefitList.get(i).getData());
+				temp.add(Double.parseDouble(costList.get(i).getDatetime()));
+				costAndBenefits.add(temp);
+				
+				costDataList.add(costList.get(i).getData());
+				benefitDataList.add(benefitList.get(i).getData());
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			model.addAttribute("message", "数据出错");
+			return model;
 		}
 
 		//拟合度
@@ -110,23 +163,27 @@ public class DataController extends BaseController{
 		Future<Double> regressionA;
 		//回归方程参数b
 		Future<Double> regressionB;
+		//方程坐标
+		Future<List<List<Double>>> points;
 		try {
-			determinationCoefficient = dataService.determinationCoefficient(costDataList, benefitDataList);
-			correlationCoefficient = dataService.correlationCoefficient(costDataList, benefitDataList);
 			regressionA=dataService.calculateA(costDataList, benefitDataList);
 			regressionB=dataService.calculateB(costDataList, benefitDataList,regressionA.get());
+			correlationCoefficient = dataService.correlationCoefficient(costDataList, benefitDataList);
+			determinationCoefficient = dataService.determinationCoefficient(costDataList, benefitDataList,regressionA.get(),regressionB.get());
+			points = dataService.regressionPoint(costDataList, regressionA.get(), regressionB.get());
 			
-			model.addAttribute("determinationCoefficient", determinationCoefficient.get());
-			model.addAttribute("correlationCoefficient", correlationCoefficient.get());
-			model.addAttribute("regressionA", regressionA.get());
-			model.addAttribute("regressionB", regressionB.get());
+			model.addAttribute("determinationCoefficient", String.format("%.3f",determinationCoefficient.get()));
+			model.addAttribute("correlationCoefficient", String.format("%.3f",correlationCoefficient.get()));
+			model.addAttribute("regressionA", String.format("%.3f",regressionA.get()));
+			model.addAttribute("regressionB", String.format("%.3f",regressionB.get()));
+			model.addAttribute("points", points.get());
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			model.addAttribute("false", renderResult(Global.FALSE, text("计算出错")));
+			e.printStackTrace();
+			model.addAttribute("message", "计算出错");
 			return model;
 		}
-		
 		
 		model.addAttribute("year", year);
 		model.addAttribute("costAndBenefits", costAndBenefits);

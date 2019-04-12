@@ -24,38 +24,17 @@
 			</#form:form>	
 			<hr />
 			<!-- 图表内容 -->
+			<!-- 收益 -->
 			<div id="benefits" style="width:85%;height:450px;"></div>
 			<hr />
+			<!-- 成本 -->
+			<div id="cost" style="width:85%;height:450px;"></div>
+			<hr />
+			<!-- 回归方程 -->
 			<div id="costAndBenefits" style="width:85%;height:450px;"></div>
 			
 			<div class="row">
-				<div class="col-xs-4">
-					<div class="form-group">
-						<label class="control-label col-sm-3" title="">
-							<span class="required ">*</span> ${text('拟合度')}：<i class="fa icon-question hide"></i></label>
-						<div class="col-sm-3">
-							<#form:input id="determinationCoefficient" readonly="true" maxlength="20" class="form-control"/>
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-4">
-					<div class="form-group">
-						<label class="control-label col-sm-3" title="">
-							<span class="required ">*</span> ${text('相关系数')}：<i class="fa icon-question hide"></i></label>
-						<div class="col-sm-3">
-							<#form:input id="correlationCoefficient" readonly="true" maxlength="20" class="form-control"/>
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-4">
-					<div class="form-group">
-						<label class="control-label col-sm-3" title="">
-							<span class="required ">*</span> ${text('回归方程')}：<i class="fa icon-question hide"></i></label>
-						<div class="col-sm-3">
-							<#form:input id="regressionEquation" readonly="true" maxlength="20" class="form-control"/>
-						</div>
-					</div>
-				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -88,6 +67,7 @@ function calculate(){
 	            },
 	            yAxis: {},
 	            series: [{
+	            	symbolSize: 15,
 	            	name: '销售额',
 	                type: 'line',
 	                data: result.value
@@ -96,6 +76,39 @@ function calculate(){
 	        benefitsChart.setOption(option);
 		}
 	});
+	
+	
+	var benefitsChart = echarts.init(document.getElementById('cost'));
+	$.ajax({
+		type:"POST",
+		url:"${ctx}/Data/Data/costByYearData",
+		data:{'date':date},
+		async:false,
+		success : function(result) {
+			// 销售额配置项和数据
+	        var option = {
+	            title: {
+	            	text: result.year+'年'+'长河商贸各月成本'
+	            },
+	            tooltip: {},
+	            legend: {
+	            	data:['成本']
+	            },
+	            xAxis: {
+	            	data: result.name
+	            },
+	            yAxis: {},
+	            series: [{
+	            	symbolSize: 15,
+	            	name: '成本',
+	                type: 'line',
+	                data: result.value
+	            }]
+	        };
+	        benefitsChart.setOption(option);
+		}
+	});
+	
 	
 	var costAndBenefitsChar = echarts.init(document.getElementById('costAndBenefits'));
 	$.ajax({
@@ -107,18 +120,44 @@ function calculate(){
 			// 销售额配置项和数据
 			var option = {
 			    title: {
-			    	text: result.year+'年'+'长河商贸各月收益与成本                   '+
+			    	text: result.year+'年'+'长河商贸各月收益与成本     '+
 			    		'拟合度：'+result.determinationCoefficient+'    相关系数：'+result.correlationCoefficient+
-			    		'\n回归方程：y='+result.regressionA+'x+'+result.regressionB
+			    		'      回归方程：y='+result.regressionA+'x+'+result.regressionB
+			    },tooltip: {
+			          show: true,
+			          trigger: 'item',
+			          axisPointer: {
+			              type: 'cross',
+			              snap: true,
+			              axis: 'x', // x轴选项
+			              label: {
+			                // show: false,
+			                color: '#fff',
+			                backgroundColor: 'rgba(0, 0, 0, .55)'
+			              }
+			          }
 			    },
 			    xAxis: {
-			    	name:'成本'
+			    	name:'成本',
+			    	type: 'value',
+			        splitLine: {
+			            lineStyle: {
+			                  type: 'dashed'
+			              }
+			         }
 			    },
 			    yAxis: {
-			    	name:'收益'
+			    	name:'收益',
+			    	type: 'value',
+			        splitLine: {
+			            lineStyle: {
+			                type: 'dashed'
+			            }
+			        }
 			    },
 			    series: [{
 			        symbolSize: 15,
+			        name:'实际收益',
 			        data: result.costAndBenefits,
 			        type: 'scatter',
 			        label: {
@@ -130,7 +169,31 @@ function calculate(){
 			                position: 'top'
 			            }
 			        },
-			   }]
+			   }, {
+			        name: '近似收益',
+			        type: 'line',
+			        showSymbol: true,
+			        symbolSize: 5,
+			        smooth: true,
+			        data: result.points,
+			        markPoint: {
+			            itemStyle: {
+			                normal: {
+			                    color: 'transparent'
+			                }
+			            },
+			            label: {
+			                normal: {
+			                    show: true,
+			                    position: 'left',
+			                    textStyle: {
+			                        color: '#333',
+			                        fontSize: 14
+			                    }
+			                }
+			            }
+			        }
+			    }]
 			};
 			costAndBenefitsChar.setOption(option);
 		}

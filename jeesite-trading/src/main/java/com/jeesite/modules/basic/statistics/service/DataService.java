@@ -1,5 +1,6 @@
 package com.jeesite.modules.basic.statistics.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -37,24 +38,24 @@ public class DataService extends CrudService<DataDao, Data> {
 	 * 根据年份统计销售额
 	 * @param year
 	 */
-	public List<Data> statisticsSalesByYear(String year){
-		return dataDao.statisticsSalesByYear(year);
+	public Future<List<Data>> statisticsSalesByYear(String year){
+		return new AsyncResult<List<Data>>(dataDao.statisticsSalesByYear(year));
 	}
 	
 	/**
 	 * 根据年份统计成本
 	 * @param year
 	 */
-	public List<Data> statisticsCostByYear(String year){
-		return dataDao.statisticsCostByYear(year);
+	public Future<List<Data>> statisticsCostByYear(String year){
+		return new AsyncResult<List<Data>>(dataDao.statisticsCostByYear(year));
 	}
 	
 	/**
 	 * 根据年份统计收益
 	 * @param year
 	 */
-	public List<Data> statisticsBenefitsByYear(String year){
-		return dataDao.statisticsBenefitsByYear(year);
+	public Future<List<Data>> statisticsBenefitsByYear(String year){
+		return new AsyncResult<List<Data>>(dataDao.statisticsBenefitsByYear(year));
 	}
 	
 	/**
@@ -76,7 +77,7 @@ public class DataService extends CrudService<DataDao, Data> {
 		Ey2=Ey2/y.size();
 		Cov=Exy-Ex*Ey;
 		
-		r=Cov/(Math.sqrt(Ex2)*Math.sqrt(Ey2));
+		r=Cov/(Math.sqrt(Ex2-Ex*Ex)*Math.sqrt(Ey2-Ey*Ey));
 
 		return new AsyncResult<Double>(r);
 	}
@@ -87,19 +88,20 @@ public class DataService extends CrudService<DataDao, Data> {
 	 * @throws InterruptedException 
 	 */
 	@Async("taskExecutor")
-	public Future<Double> determinationCoefficient(List<Double> x,List<Double> y) throws InterruptedException, ExecutionException{
+	public Future<Double> determinationCoefficient(List<Double> x,List<Double> y,double a, double b){
 		double SSE=0,SST=0;
-		double a = calculateA(x,y).get();
-		double b = calculateB(x,y,a).get();
 		double averageY = average(y);
 		
-		//计算SSE、SSR
+		//计算SSE、SST
 		for(int i=0;i<x.size()&&i<y.size();i++){
 			SSE+=Math.pow(y.get(i)-(a*x.get(i)+b),2);
-			SST+=y.get(i)-averageY;
+			SST+=Math.pow(y.get(i)-averageY,2);
 		}
 		
-		return new AsyncResult<Double>((1-SSE)/SST);
+		//避免除以零
+		if(SST==0)SST=1;
+		
+		return new AsyncResult<Double>(1-SSE/SST);
 	}
 	
 	/**
@@ -124,7 +126,8 @@ public class DataService extends CrudService<DataDao, Data> {
 	 */
 	@Async("taskExecutor")
 	public Future<Double> calculateB(List<Double> x,List<Double> y,double a){
-		return new AsyncResult<Double>(average(y)-a*average(x));
+		double b = average(y)-a*average(x);
+		return new AsyncResult<Double>(b);
 	}
 	
 	/**
@@ -138,5 +141,19 @@ public class DataService extends CrudService<DataDao, Data> {
 		return averageX/x.size();
 	}
 	
+	/**
+	 * 计算回归方程坐标
+	 */
+	@Async("taskExecutor")
+	public Future<List<List<Double>>> regressionPoint(List<Double> x, double a, double b){
+		List<List<Double>> point = new ArrayList<List<Double>>();
+		for(int i =0;i<x.size();i++){
+			List<Double> temp = new ArrayList<Double>();
+			temp.add(x.get(i));
+			temp.add(a*x.get(i)+b);
+			point.add(temp);
+		}
+		return new AsyncResult<List<List<Double>>>(point);
+	}
 	
 }

@@ -25,10 +25,10 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.basic.customers.entity.CustomersC;
 import com.jeesite.modules.basic.customers.service.CustomersCService;
+import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
 import com.jeesite.modules.presale.offer.entity.OfferC;
-import com.jeesite.modules.presale.offer.entity.ReferenceProductC;
 import com.jeesite.modules.presale.offer.service.OfferCService;
 import com.jeesite.modules.sys.entity.User;
 import com.jeesite.modules.sys.utils.UserUtils;
@@ -50,6 +50,9 @@ public class OfferCController extends BaseController {
 	
 	@Autowired
 	private ProductCService productCService;
+	
+	@Autowired
+	private PrinterService printerService;
 	
 	/**
 	 * 获取数据
@@ -224,6 +227,24 @@ public class OfferCController extends BaseController {
 	public String delete(OfferC offerC) {
 		offerCService.delete(offerC);
 		return renderResult(Global.TRUE, text("删除报价成功！"));
+	}
+	
+	/**
+	 * 打印报价单
+	 * @param offerC
+	 * @param response
+	 * @throws IOException 
+	 */
+	@RequiresPermissions("offer:offerC:view")
+	@RequestMapping(value = "print")
+	@ResponseBody
+	public String print(OfferC offerC,HttpServletResponse response){
+		try{
+			printerService.printOffer(offerC, response);			
+			return renderResult(Global.TRUE, text("打印报价成功！"));
+		}catch(IOException e){
+			return renderResult(Global.TRUE, text("打印出错！"));
+		}
 	}
 	
 }

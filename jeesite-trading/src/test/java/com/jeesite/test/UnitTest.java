@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jeesite.modules.Application;
+import com.jeesite.modules.basic.printer.service.Dictionaries;
+import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.statistics.dao.DataDao;
 import com.jeesite.modules.basic.statistics.entity.Data;
+import com.jeesite.modules.basic.statistics.service.DataService;
 
 /**
  * 单元测试
@@ -30,6 +35,10 @@ public class UnitTest {
 	
 	@Autowired
 	DataDao dataDao;
+	@Autowired
+	DataService dataService;
+	@Autowired
+	Dictionaries dict;
 	
 	@Test
 	//按月份统计付款额
@@ -106,5 +115,35 @@ public class UnitTest {
 		for(String d : costAndBenefits){
 			System.out.println(d);
 		}
+	}
+	
+	@Test
+	public void regressionAnalysis() throws InterruptedException, ExecutionException{
+		List<Double> x = new ArrayList<Double>();
+		List<Double> y = new ArrayList<Double>();
+		
+		x.add(1.0);x.add(2.0);x.add(3.0);
+		y.add(2.0);y.add(3.0);y.add(4.0);
+		
+		//相关系数
+		Future<Double> correlation =  dataService.correlationCoefficient(x, y);
+		System.out.println(String.format("correlation:%.3f", correlation.get()));
+		
+		//参数a,b
+		Future<Double> a = dataService.calculateA(x, y);
+		Future<Double> b = dataService.calculateB(x, y,a.get());
+		System.out.println(String.format("a:%.3f", a.get()));
+		System.out.println(String.format("b:%.3f", b.get()));
+		
+		//判断系数
+		Future<Double> determina =  dataService.determinationCoefficient(x, y,a.get(),b.get());
+		System.out.println(String.format("determina:%.3f", determina.get()));
+	}
+	
+	@Test
+	//获取字典数据
+	public void getDictionaries(){
+		dict.init();
+		System.out.println(dict.getTransportWay("1"));
 	}
 }
