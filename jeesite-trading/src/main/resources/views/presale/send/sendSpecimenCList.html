@@ -101,23 +101,21 @@ $('#dataGrid').dataGrid({
 		{header:'${text("寄样时间")}', name:'sendTime', index:'a.send_time', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/send/sendSpecimenC/form?id='+row.id+'" class="btnList" data-title="${text("编辑寄样")}">'+(val||row.id)+'</a>';
 		}},
-		{header:'${text("寄送地址")}', name:'address', index:'a.address', width:150, align:"left"},
+		{header:'${text("寄送地址")}', name:'address', index:'a.address', width:150, align:"center"},
 		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("预计送达")}', name:'preArriveTime', index:'a.pre_arrive_time', width:150, align:"center"},
-		{header:'${text("物流单号")}', name:'logisticsBill', index:'a.logistics_bill', width:150, align:"left"},
+		{header:'${text("物流单号")}', name:'logisticsBill', index:'a.logistics_bill', width:170, align:"center"},
 		{header:'${text("收货时间")}', name:'takeGoodsTime', index:'a.take_goods_time', width:150, align:"center"},
-		{header:'${text("客户评价")}', name:'cusComment', index:'a.cus_comment', width:150, align:"left"},
-		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
-		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
-		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"center"},
+		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"center"},
+		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:130, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_apply_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
-		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'${text("操作")}', name:'actions', width:180, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('send:sendSpecimenC:edit')){ %>
 				actions.push('<a href="${ctx}/send/sendSpecimenC/form?id='+row.id+'" class="btnList" title="${text("编辑寄样")}"><i class="fa fa-pencil"></i></a>&nbsp;');
@@ -128,6 +126,7 @@ $('#dataGrid').dataGrid({
 					actions.push('<a href="${ctx}/send/sendSpecimenC/enable?id='+row.id+'" class="btnList" title="${text("启用寄样")}" data-confirm="${text("确认要启用该寄样吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
 				}
 				actions.push('<a href="${ctx}/send/sendSpecimenC/delete?id='+row.id+'" class="btnList" title="${text("删除寄样")}" data-confirm="${text("确认要删除该寄样吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/send/sendSpecimenC/print?id='+row.id+'" class="btnList" title="${text("打印寄样")}"><i class="fa fa-print"></i></a>&nbsp;');
 			<% } %>
 			return actions.join('');
 		}}

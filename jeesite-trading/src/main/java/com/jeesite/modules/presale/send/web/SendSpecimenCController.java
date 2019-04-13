@@ -25,6 +25,7 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.basic.customers.entity.CustomersC;
 import com.jeesite.modules.basic.customers.service.CustomersCService;
+import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
 import com.jeesite.modules.presale.send.entity.SendSpecimenC;
@@ -49,6 +50,10 @@ public class SendSpecimenCController extends BaseController {
 	
 	@Autowired
 	private ProductCService productCService;
+	
+	@Autowired
+	private PrinterService printerService;
+	
 	/**
 	 * 获取数据
 	 */
@@ -222,6 +227,21 @@ public class SendSpecimenCController extends BaseController {
 	public String delete(SendSpecimenC sendSpecimenC) {
 		sendSpecimenCService.delete(sendSpecimenC);
 		return renderResult(Global.TRUE, text("删除寄样成功！"));
+	}
+	
+	/**
+	 * 打印寄样
+	 */
+	@RequiresPermissions("send:sendSpecimenC:view")
+	@RequestMapping(value = "print")
+	@ResponseBody
+	public String print(SendSpecimenC sendSpecimenC,HttpServletResponse response) {
+		try {
+			printerService.printSend(sendSpecimenC, response);
+			return renderResult(Global.TRUE, text("打印寄样成功！"));
+		}catch (IOException e) {
+			return renderResult(Global.TRUE, text("打印寄样出错！"));
+		}
 	}
 	
 }

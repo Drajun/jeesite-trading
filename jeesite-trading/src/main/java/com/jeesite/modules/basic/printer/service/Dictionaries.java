@@ -25,12 +25,13 @@ public class Dictionaries extends CrudService<PrinterDao, Printer> {
 	@Autowired
 	private DictDataService dictDataService;
 	
-	private Map<String, String> priceItem = new HashMap<String, String>();
-	private Map<String, String> transport = new HashMap<String, String>();
-	private Map<String, String> payment = new HashMap<String, String>();
+	private Map<String, String> priceItem = new HashMap<String, String>();		//价格条款
+	private Map<String, String> transport = new HashMap<String, String>();		//运输方式
+	private Map<String, String> payment = new HashMap<String, String>();		//付款方式
+	private Map<String, String> packageUnit = new HashMap<String, String>();	//包装单位
+	private Map<String, String> singlePackage = new HashMap<String, String>();	//单件包装方式
 
 	public void init(){
-		//价格条款
 		DictData d = new DictData("");
 		List<DictData> allDictList = dictDataService.findList(d);
 				
@@ -41,6 +42,10 @@ public class Dictionaries extends CrudService<PrinterDao, Printer> {
 				transport.put(dictData.getDictValue(), dictData.getDictLabel());
 			if(dictData.getDictType().equals("trading_paymentterrms"))
 				payment.put(dictData.getDictValue(), dictData.getDictLabel());
+			if(dictData.getDictType().equals("trading_package_unit"))
+				packageUnit.put(dictData.getDictValue(), dictData.getDictLabel());
+			if(dictData.getDictType().equals("trading_single_package"))
+				singlePackage.put(dictData.getDictValue(), dictData.getDictLabel());
 		}
 	}
 	
@@ -55,4 +60,13 @@ public class Dictionaries extends CrudService<PrinterDao, Printer> {
 	public String getPayment(String key){
 		return payment.get(key);
 	}
+	
+	public String getPackageUnit(String key){
+		return packageUnit.get(key);
+	}
+	
+	public String getSinglePackage(String key){
+		return singlePackage.get(key);
+	}
+	
 }

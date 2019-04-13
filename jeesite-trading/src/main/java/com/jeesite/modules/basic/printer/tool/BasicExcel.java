@@ -26,7 +26,7 @@ public class BasicExcel {
 		//导入模板
 		InputStream is = new FileInputStream(new File(srcXlsPath));
 		Workbook wb = new XSSFWorkbook(is);
-		
+		is.close();
 		return wb;
 	}
 }

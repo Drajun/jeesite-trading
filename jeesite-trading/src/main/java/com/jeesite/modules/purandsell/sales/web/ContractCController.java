@@ -25,6 +25,7 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.basic.customers.entity.CustomersC;
 import com.jeesite.modules.basic.customers.service.CustomersCService;
+import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
 import com.jeesite.modules.purandsell.sales.entity.ContractC;
@@ -49,6 +50,9 @@ public class ContractCController extends BaseController {
 	
 	@Autowired
 	private ProductCService productCService;
+
+	@Autowired
+	private PrinterService printerService;
 	
 	/**
 	 * 获取数据
@@ -230,6 +234,22 @@ public class ContractCController extends BaseController {
 	public String delete(ContractC contractC) {
 		contractCService.delete(contractC);
 		return renderResult(Global.TRUE, text("删除销售合同成功！"));
+	}
+	
+	/**
+	 * 打印销售合同
+	 */
+	@RequiresPermissions("sales:contractC:view")
+	@RequestMapping(value = "print")
+	@ResponseBody
+	public String print(ContractC contractC,HttpServletResponse response) {
+		try {
+			printerService.printSalesContract(contractC, response);
+			return renderResult(Global.TRUE, text("打印完成！"));
+		}catch (IOException e) {
+			e.printStackTrace();
+			return renderResult(Global.TRUE, text("打印出错！"));
+		}
 	}
 	
 }
