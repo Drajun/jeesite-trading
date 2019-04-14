@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '付款管理管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '付款管理审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('付款管理管理')}
+				<i class="fa fa-list-alt"></i> ${text('付款管理审批')}
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -84,13 +84,17 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("付款单号")}', name:'paybillCode', index:'a.paybill_code', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/paybill/paybillF/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑付款管理")}">'+(val||row.id)+'</a>';
+			if(row.statu==1){
+			    return '<a href="${ctx}/paybill/paybillF/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑付款管理")}">'+(val||row.id)+'</a>';
+			}else{
+				row.paybillCode;
+			}
 		}},
 		{header:'${text("付款时间")}', name:'paybillTime', index:'a.paybill_time', width:150, align:"center"},
 		{header:'${text("付款类型")}', name:'paybillType', index:'a.paybill_type', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_rp_type')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("实付金额")}', name:'actualAmount', index:'a.actual_amount', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'${text("实付金额(￥)")}', name:'actualAmount', index:'a.actual_amount', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){

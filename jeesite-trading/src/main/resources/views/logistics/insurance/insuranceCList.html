@@ -35,28 +35,9 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('结束时间')}：</label>
-					<div class="control-inline">
-						<#form:input path="endTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
-							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
-					</div>
-				</div>
-				<div class="form-group">
 					<label class="control-label">${text('销售合同')}：</label>
 					<div class="control-inline width-120">
 						<#form:select path="contractCode" dictType="" blankOption="true" class="form-control"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('起始地')}：</label>
-					<div class="control-inline">
-						<#form:input path="startAddr" maxlength="64" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('目的地')}：</label>
-					<div class="control-inline">
-						<#form:input path="endAddr" maxlength="64" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -81,12 +62,6 @@
 					<label class="control-label">${text('保险总费')}：</label>
 					<div class="control-inline">
 						<#form:input path="insuranceCost" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('备注信息')}：</label>
-					<div class="control-inline">
-						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -127,10 +102,9 @@ $('#dataGrid').dataGrid({
 		{header:'${text("销售合同")}', name:'contractCode', index:'a.contract_code', width:180, align:"center", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/insurance/insuranceC/form?id='+row.id+'" class="btnList" data-title="${text("编辑保险")}">'+(val||row.id)+'</a>';
 		}},
-		{header:'${text("保险单号")}', name:'insuranceCode', index:'a.insurance_code', width:150, align:"left"},
-		{header:'${text("保险公司")}', name:'insuranceCompany', index:'a.insurance_company', width:180, align:"left"},
+		{header:'${text("保险单号")}', name:'insuranceCode', index:'a.insurance_code', width:150, align:"center"},
+		{header:'${text("保险公司")}', name:'insuranceCompany', index:'a.insurance_company', width:180, align:"center"},
 		{header:'${text("起始时间")}', name:'startTime', index:'a.start_time', width:170, align:"center"},
-		{header:'${text("结束时间")}', name:'endTime', index:'a.end_time', width:170, align:"center"},
 		{header:'${text("保险类型")}', name:'insuranceType', index:'a.insurance_type', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_insurance_type')}, val, '${text("未知")}', true);
 		}},
@@ -140,10 +114,10 @@ $('#dataGrid').dataGrid({
 		{header:'${text("附加险")}', name:'extraInsurance', index:'a.extra_insurance', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_extra_insurance')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("保险费率%")}', name:'insuranceRate', index:'a.insurance_rate', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("保险费率%")}', name:'insuranceRate', index:'a.insurance_rate', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("保险总费")}', name:'insuranceCost', index:'a.insurance_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("保险总费(￥)")}', name:'insuranceCost', index:'a.insurance_cost', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
@@ -151,8 +125,7 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
-		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"center"},
 		{header:'${text("操作")}', name:'actions', width:150, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('insurance:insuranceC:edit')){ %>

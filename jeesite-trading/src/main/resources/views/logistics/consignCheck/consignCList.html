@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '托运管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '托运审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('托运管理')}
+				<i class="fa fa-list-alt"></i> ${text('托运审批')}
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -68,7 +68,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('总金额')}：</label>
+					<label class="control-label">${text('总金额(￥)')}：</label>
 					<div class="control-inline">
 						<#form:input path="totalAmount" class="form-control width-120"/>
 					</div>
@@ -121,7 +121,11 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("代运编号")}', name:'consignCode', index:'a.consign_code', width:180, align:"left", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/consign/consignC/checkForm?id='+row.id+'" class="btnList" data-title="${text("审批托运")}">'+(val||row.id)+'</a>';
+			if(row.statu==1){
+			    return '<a href="${ctx}/consign/consignC/checkForm?id='+row.id+'" class="btnList" data-title="${text("审批托运")}">'+(val||row.id)+'</a>';
+			}else{
+				return row.consignCode;
+			}
 		}},
 		{header:'${text("申请日期")}', name:'applyTime', index:'a.apply_time', width:150, align:"center"},
 		{header:'${text("合同编号")}', name:'contractCode', index:'a.contract_code', width:150, align:"center"},

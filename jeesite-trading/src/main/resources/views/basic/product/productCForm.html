@@ -55,6 +55,27 @@
 				<#form:hidden path="level"/>
 				</div>
 				<div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required ">*</span> ${text('单个重量(kg)')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="weight" class="form-control required number"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required hide">*</span> ${text('存放位置')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:select path="position" dictType="trading_position" blankOption="true" maxlength="64" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                <#form:hidden path="totalSoldNum"/>
+                </div>
+				<div class="row">
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">
@@ -75,27 +96,6 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label class="control-label col-sm-4" title="">
-								<span class="required ">*</span> ${text('单个重量(kg)')}：<i class="fa icon-question hide"></i></label>
-							<div class="col-sm-8">
-								<#form:input path="weight" class="form-control required number"/>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label class="control-label col-sm-4" title="">
-								<span class="required hide">*</span> ${text('存放位置')}：<i class="fa icon-question hide"></i></label>
-							<div class="col-sm-8">
-								<#form:select path="position" dictType="trading_position" blankOption="true" maxlength="64" class="form-control"/>
-							</div>
-						</div>
-					</div>
-				<#form:hidden path="totalSoldNum"/>
 				</div>
 				<div class="row">
 					<div class="col-xs-12">

@@ -123,26 +123,25 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("代运编号")}', name:'consignCode', index:'a.consign_code', width:180, align:"left", frozen:true, formatter: function(val, obj, row, act){
+		{header:'${text("代运编号")}', name:'consignCode', index:'a.consign_code', width:180, align:"center", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/consign/consignC/form?id='+row.id+'" class="btnList" data-title="${text("编辑托运")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("申请日期")}', name:'applyTime', index:'a.apply_time', width:150, align:"center"},
 		{header:'${text("合同编号")}', name:'contractCode', index:'a.contract_code', width:150, align:"center"},
-		{header:'${text("承运公司")}', name:'consignCompany', index:'a.consign_company', width:150, align:"left"},
-		{header:'${text("运输工具名称")}', name:'transportationName', index:'a.transportation_name', width:180, align:"left"},
-		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"center"},
+		{header:'${text("承运公司")}', name:'consignCompany', index:'a.consign_company', width:150, align:"center"},
+		{header:'${text("运输工具名称")}', name:'transportationName', index:'a.transportation_name', width:180, align:"center"},
+		{header:'${text("总金额(￥)")}', name:'totalAmount', index:'a.total_amount', width:150, align:"center"},
 		{header:'${text("付款方式")}', name:'paymentTerm', index:'a.payment_term', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_paymentterrms')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("付款时间")}', name:'paymentTime', index:'a.payment_time', width:150, align:"center"},
-		{header:'${text("负责人")}', name:'operator', index:'a.operator', width:150, align:"left"},
-		{header:'${text("负责人电话")}', name:'operatorPhone', index:'a.operator_phone', width:150, align:"left"},
+		{header:'${text("负责人")}', name:'operator', index:'a.operator', width:150, align:"center"},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
 		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"center"},
 		{header:'${text("操作")}', name:'actions', width:150, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('consign:consignC:edit')){ %>

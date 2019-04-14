@@ -48,18 +48,6 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('详细地址')}：</label>
-					<div class="control-inline">
-						<#form:input path="address" maxlength="200" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('消费总额')}：</label>
-					<div class="control-inline">
-						<#form:input path="totalBuyAmount" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
 					<label class="control-label">${text('信用评分')}：</label>
 					<div class="control-inline width-120">
 						<#form:select path="credit" dictType="trading_credit" blankOption="true" class="form-control"/>
@@ -87,20 +75,16 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("客户姓名")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+		{header:'${text("客户姓名")}', name:'name', index:'a.name', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/customers/customersC/form?id='+row.id+'" class="btnList" data-title="${text("编辑客户")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("性别")}', name:'sex', index:'a.sex', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_user_sex')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("联系电话")}', name:'phone', index:'a.phone', width:150, align:"left"},
-		{header:'${text("电子邮箱")}', name:'email', index:'a.email', width:150, align:"left"},
-		{header:'${text("所属公司")}', name:'company', index:'a.company', width:150, align:"left"},
+		{header:'${text("联系电话")}', name:'phone', index:'a.phone', width:150, align:"center"},
+		{header:'${text("电子邮箱")}', name:'email', index:'a.email', width:150, align:"center"},
+		{header:'${text("所属公司")}', name:'company', index:'a.company', width:150, align:"center"},
 		{header:'${text("地区")}', name:'district', index:'a.district', width:150, align:"center"},
-		{header:'${text("详细地址")}', name:'address', index:'a.address', width:150, align:"left"},
-		{header:'${text("消费总额")}', name:'totalBuyAmount', index:'a.total_buy_amount', width:150, align:"right", formatter: function(val, obj, row, act){
-			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
-		}},
 		{header:'${text("信用评分")}', name:'credit', index:'a.credit', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_credit')}, val, '${text("未知")}', true);
 		}},
@@ -108,7 +92,6 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
-		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('customers:customersC:edit')){ %>

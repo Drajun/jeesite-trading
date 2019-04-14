@@ -117,10 +117,10 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("报检时间")}', name:'inspectionTime', index:'a.inspection_time', width:180, align:"left", frozen:true, formatter: function(val, obj, row, act){
+		{header:'${text("报检时间")}', name:'inspectionTime', index:'a.inspection_time', width:180, align:"center", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/inspection/inspectionC/form?id='+row.id+'" class="btnList" data-title="${text("编辑报检")}">'+(val||row.id)+'</a>';
 		}},
-		{header:'${text("报检编号")}', name:'inspectionCode', index:'a.inspection_code', width:180, align:"left"},
+		{header:'${text("报检编号")}', name:'inspectionCode', index:'a.inspection_code', width:180, align:"center"},
 		{header:'${text("运输方式")}', name:'transportWays', index:'a.transport_ways', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_transport_way')}, val, '${text("未知")}', true);
 		}},
@@ -128,21 +128,19 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_way')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("合同号")}', name:'contractCode', index:'a.contract_code', width:180, align:"center"},
-		{header:'${text("信用证")}', name:'letterCredit', index:'a.letter_credit', width:150, align:"left"},
-		{header:'${text("用途")}', name:'using', index:'a.using', width:150, align:"center"},
+		{header:'${text("信用证")}', name:'letterCredit', index:'a.letter_credit', width:150, align:"center"},
 		{header:'${text("输往国家")}', name:'district', index:'a.district', width:150, align:"center"},
-		{header:'${text("报检费用")}', name:'inspectionCost', index:'a.inspection_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("报检费用(￥)")}', name:'inspectionCost', index:'a.inspection_cost', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("操作员")}', name:'operator', index:'a.operator', width:150, align:"left"},
 		{header:'${text("领证时间")}', name:'takeTime', index:'a.take_time', width:150, align:"center"},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
 		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:140, align:"center"},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:140, align:"left"},
-		{header:'${text("操作")}', name:'actions', width:140, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:140, align:"center"},
+		{header:'${text("操作")}', name:'actions', width:180, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('inspection:inspectionC:edit')){ %>
 				actions.push('<a href="${ctx}/inspection/inspectionC/form?id='+row.id+'" class="btnList" title="${text("编辑报检")}"><i class="fa fa-pencil"></i></a>&nbsp;');

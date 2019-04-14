@@ -1,4 +1,4 @@
-<% layout('/layouts/default.html', {title: '报关管理', libs: ['validate','fileupload']}){ %>
+<% layout('/layouts/default.html', {title: '报关审批', libs: ['validate','fileupload']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header with-border">
@@ -160,7 +160,7 @@
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">
-								<span class="required ">*</span> ${text('委托费用')}：<i class="fa icon-question hide"></i></label>
+								<span class="required ">*</span> ${text('委托费用(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
 								<#form:input readonly="true" path="entrustCost" class="form-control required number"/>
 							</div>

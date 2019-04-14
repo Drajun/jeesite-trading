@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '保险管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '保险审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('保险管理')}
+				<i class="fa fa-list-alt"></i> ${text('保险审批')}
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -32,28 +32,9 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('结束时间')}：</label>
-					<div class="control-inline">
-						<#form:input path="endTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
-							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
-					</div>
-				</div>
-				<div class="form-group">
 					<label class="control-label">${text('销售合同')}：</label>
 					<div class="control-inline width-120">
 						<#form:select path="contractCode" dictType="" blankOption="true" class="form-control"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('起始地')}：</label>
-					<div class="control-inline">
-						<#form:input path="startAddr" maxlength="64" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('目的地')}：</label>
-					<div class="control-inline">
-						<#form:input path="endAddr" maxlength="64" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -78,12 +59,6 @@
 					<label class="control-label">${text('保险总费')}：</label>
 					<div class="control-inline">
 						<#form:input path="insuranceCost" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('备注信息')}：</label>
-					<div class="control-inline">
-						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -122,12 +97,15 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("销售合同")}', name:'contractCode', index:'a.contract_code', width:180, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/insurance/insuranceC/checkForm?id='+row.id+'" class="btnList" data-title="${text("保险审批")}">'+(val||row.id)+'</a>';
+			if(row.statu==1){
+			    return '<a href="${ctx}/insurance/insuranceC/checkForm?id='+row.id+'" class="btnList" data-title="${text("保险审批")}">'+(val||row.id)+'</a>';
+			}else{
+				return row.contractCode;
+			}
 		}},
 		{header:'${text("保险单号")}', name:'insuranceCode', index:'a.insurance_code', width:150, align:"left"},
 		{header:'${text("保险公司")}', name:'insuranceCompany', index:'a.insurance_company', width:180, align:"left"},
 		{header:'${text("起始时间")}', name:'startTime', index:'a.start_time', width:170, align:"center"},
-		{header:'${text("结束时间")}', name:'endTime', index:'a.end_time', width:170, align:"center"},
 		{header:'${text("保险类型")}', name:'insuranceType', index:'a.insurance_type', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_insurance_type')}, val, '${text("未知")}', true);
 		}},
@@ -140,7 +118,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("保险费率%")}', name:'insuranceRate', index:'a.insurance_rate', width:150, align:"right", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("保险总费")}', name:'insuranceCost', index:'a.insurance_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("保险总费(￥)")}', name:'insuranceCost', index:'a.insurance_cost', width:150, align:"right", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
@@ -149,7 +127,6 @@ $('#dataGrid').dataGrid({
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
 		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
-		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"}
 	],
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){

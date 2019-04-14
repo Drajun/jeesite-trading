@@ -79,12 +79,6 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('备注信息')}：</label>
-					<div class="control-inline">
-						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
 					<label class="control-label">${text('审批时间')}：</label>
 					<div class="control-inline">
 						<#form:input path="checkTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
@@ -111,22 +105,22 @@ $('#dataGrid').dataGrid({
 			return '<a href="${ctx}/sales/contractC/form?id='+row.id+'" class="btnList" data-title="${text("编辑销售合同")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("签约时间")}', name:'signTime', index:'a.sign_time', width:150, align:"center"},
-		{header:'${text("价格条款")}', name:'priceTerm', index:'a.price_term', width:140, align:"center", formatter: function(val, obj, row, act){
+		{header:'${text("价格条款")}', name:'priceTerm', index:'a.price_term', width:130, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_price_term')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("总金额(￥)")}', name:'totalAmount', index:'a.total_amount', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("装运时间")}', name:'shipmentTime', index:'a.shipment_time', width:150, align:"center"},
+		{header:'${text("装运时间")}', name:'shipmentTime', index:'a.shipment_time', width:170, align:"center"},
 		{header:'${text("运输方式")}', name:'transportWay', index:'a.transport_way', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_transport_way')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("起始地")}', name:'startAddr', index:'a.start_addr', width:150, align:"left"},
-		{header:'${text("目的地")}', name:'endAddr', index:'a.end_addr', width:150, align:"left"},
-		{header:'${text("付款方式")}', name:'paymentTerm', index:'a.payment_term', width:140, align:"center", formatter: function(val, obj, row, act){
+		{header:'${text("起始地")}', name:'startAddr', index:'a.start_addr', width:150, align:"center"},
+		{header:'${text("目的地")}', name:'endAddr', index:'a.end_addr', width:150, align:"center"},
+		{header:'${text("付款方式")}', name:'paymentTerm', index:'a.payment_term', width:130, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_paymentterrms')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("付款截止")}', name:'paymentTime', index:'a.payment_time', width:150, align:"center"},
+		{header:'${text("付款截止")}', name:'paymentTime', index:'a.payment_time', width:170, align:"center"},
 		{header:'${text("销售状态")}', name:'statu', index:'a.statu', width:140, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
 		}},

@@ -176,21 +176,22 @@
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">
-								<span class="required hide">*</span> ${text('提单号')}：<i class="fa icon-question hide"></i></label>
-							<div class="col-sm-8">
-								<#form:input path="ladingBill" maxlength="64" class="form-control abc"/>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('运费')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
 								<#form:input path="carriageCost" class="form-control required number"/>
 							</div>
 						</div>
 					</div>
+					<div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required ">*</span> ${text('付款时间')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="paymentTime" readonly="true" maxlength="20" class="form-control Wdate required"
+                                    dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd ',isShowClear:false});"/>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 				<div class="row">
 					<div class="col-xs-6">
@@ -216,33 +217,32 @@
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">
-								<span class="required ">*</span> ${text('付款时间')}：<i class="fa icon-question hide"></i></label>
-							<div class="col-sm-8">
-								<#form:input path="paymentTime" readonly="true" maxlength="20" class="form-control Wdate required"
-									dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd ',isShowClear:false});"/>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('负责人')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
 								<#form:input path="operator" maxlength="64" class="form-control"/>
 							</div>
 						</div>
 					</div>
+					<div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required hide">*</span> ${text('负责人电话')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="operatorPhone" maxlength="64" class="form-control phone"/>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 				<div class="row">
-					<div class="col-xs-6">
-						<div class="form-group">
-							<label class="control-label col-sm-4" title="">
-								<span class="required hide">*</span> ${text('负责人电话')}：<i class="fa icon-question hide"></i></label>
-							<div class="col-sm-8">
-								<#form:input path="operatorPhone" maxlength="64" class="form-control phone"/>
-							</div>
-						</div>
-					</div>
+				    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required hide">*</span> ${text('提单号')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="ladingBill" maxlength="64" class="form-control abc"/>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12">

@@ -115,7 +115,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("收款类型")}', name:'rebillType', index:'a.rebill_type', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_rp_type')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("实收金额")}', name:'actualAmount', index:'a.actual_amount', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'${text("实收金额(￥)")}', name:'actualAmount', index:'a.actual_amount', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("付款方")}', name:'payer', index:'a.payer', width:150, align:"center"},

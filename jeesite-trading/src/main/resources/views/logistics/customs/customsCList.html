@@ -121,7 +121,7 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("委托时间")}', name:'entrustTime', index:'a.entrust_time', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+		{header:'${text("委托时间")}', name:'entrustTime', index:'a.entrust_time', width:160, align:"center", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/customs/customsC/form?id='+row.id+'" class="btnList" data-title="${text("编辑报关")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("委托书编号")}', name:'entrustCode', index:'a.entrust_code', width:150, align:"center"},
@@ -131,20 +131,18 @@ $('#dataGrid').dataGrid({
 		{header:'${text("是否退税")}', name:'isDrawback', index:'a.is_drawback', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_yes_no')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("合同编号")}', name:'contractCode', index:'a.contract_code', width:150, align:"center"},
-		{header:'${text("代理单位")}', name:'agencyCompany', index:'a.agency_company', width:150, align:"left"},
-		{header:'${text("委托费用")}', name:'entrustCost', index:'a.entrust_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("代理单位")}', name:'agencyCompany', index:'a.agency_company', width:150, align:"center"},
+		{header:'${text("委托费用(￥)")}', name:'entrustCost', index:'a.entrust_cost', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("代理人姓名")}', name:'agencyName', index:'a.agency_name', width:150, align:"left"},
-		{header:'${text("报关单号")}', name:'customsNum', index:'a.customs_num', width:150, align:"left"},
+		{header:'${text("代理人姓名")}', name:'agencyName', index:'a.agency_name', width:150, align:"center"},
 		{header:'${text("放行时间")}', name:'allowDate', index:'a.allow_date', width:150, align:"center"},
 		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
-		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"center"},
+		{header:'${text("操作")}', name:'actions', width:180, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('customs:customsC:edit')){ %>
 				actions.push('<a href="${ctx}/customs/customsC/form?id='+row.id+'" class="btnList" title="${text("编辑报关")}"><i class="fa fa-pencil"></i></a>&nbsp;');

@@ -112,7 +112,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("价格条款")}', name:'priceTerm', index:'a.price_term', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_price_term')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("总金额(￥)")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("发货时间")}', name:'deliveryTime', index:'a.delivery_time', width:150, align:"center"},
@@ -130,9 +130,8 @@ $('#dataGrid').dataGrid({
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
 		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
-		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
-		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'${text("操作")}', name:'actions', width:150, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('purchase:purchaseC:edit')){ %>
 				actions.push('<a href="${ctx}/purchase/purchaseC/form?id='+row.id+'" class="btnList" title="${text("编辑订购")}"><i class="fa fa-pencil"></i></a>&nbsp;');

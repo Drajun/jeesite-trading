@@ -1,4 +1,4 @@
-<% layout('/layouts/default.html', {title: '报关管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '报关审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
@@ -118,8 +118,12 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("委托时间")}', name:'entrustTime', index:'a.entrust_time', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/customs/customsC/checkForm?id='+row.id+'" class="btnList" data-title="${text("报关审批")}">'+(val||row.id)+'</a>';
+		{header:'${text("委托时间")}', name:'entrustTime', index:'a.entrust_time', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
+			if(row.statu==1){
+			    return '<a href="${ctx}/customs/customsC/checkForm?id='+row.id+'" class="btnList" data-title="${text("报关审批")}">'+(val||row.id)+'</a>';
+			}else{
+				return row.entrustTime;
+			}
 		}},
 		{header:'${text("委托书编号")}', name:'entrustCode', index:'a.entrust_code', width:150, align:"center"},
 		{header:'${text("是否代缴税款")}', name:'isScottare', index:'a.is_scottare', width:180, align:"center", formatter: function(val, obj, row, act){
@@ -129,12 +133,12 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_yes_no')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("合同编号")}', name:'contractCode', index:'a.contract_code', width:150, align:"center"},
-		{header:'${text("代理单位")}', name:'agencyCompany', index:'a.agency_company', width:150, align:"left"},
-		{header:'${text("委托费用")}', name:'entrustCost', index:'a.entrust_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("代理单位")}', name:'agencyCompany', index:'a.agency_company', width:150, align:"center"},
+		{header:'${text("委托费用(￥)")}', name:'entrustCost', index:'a.entrust_cost', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("代理人姓名")}', name:'agencyName', index:'a.agency_name', width:150, align:"left"},
-		{header:'${text("报关单号")}', name:'customsNum', index:'a.customs_num', width:150, align:"left"},
+		{header:'${text("代理人姓名")}', name:'agencyName', index:'a.agency_name', width:150, align:"center"},
+		{header:'${text("报关单号")}', name:'customsNum', index:'a.customs_num', width:150, align:"center"},
 		{header:'${text("放行时间")}', name:'allowDate', index:'a.allow_date', width:150, align:"center"},
 		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_sale_status')}, val, '${text("未知")}', true);

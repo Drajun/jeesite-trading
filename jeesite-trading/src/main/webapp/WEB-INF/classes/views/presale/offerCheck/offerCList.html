@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '报价管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '报价审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('报价管理')}
+				<i class="fa fa-list-alt"></i> ${text('报价审批')}
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('总价')}：</label>
+					<label class="control-label">${text('总价(￥)')}：</label>
 					<div class="control-inline">
 						<#form:input path="totalAmount" class="form-control width-120"/>
 					</div>
@@ -49,12 +49,6 @@
 					<label class="control-label">${text('客户要求')}：</label>
 					<div class="control-inline">
 						<#form:input path="custRequire" maxlength="300" class="form-control width-120"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('备注信息')}：</label>
-					<div class="control-inline">
-						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -80,48 +74,33 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("报价日期")}', name:'offerTime', index:'a.offer_time', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			if(row.statu!=1){
+			if(row.statu==1){
 				return '<a href="${ctx}/offer/offerC/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑报价")}">'+(val||row.id)+'</a>';
 			}else{
 				return row.id
 			}
 		}},
 		{header:'${text("截止日期")}', name:'deadline', index:'a.deadline', width:150, align:"center"},
-		{header:'${text("总价")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("总价(￥)")}', name:'totalAmount', index:'a.total_amount', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("运输方式")}', name:'transportWays', index:'a.transport_ways', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_transport_way')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("运费")}', name:'carriageCost', index:'a.carriage_cost', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("运费(￥)")}', name:'carriageCost', index:'a.carriage_cost', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("客户要求")}', name:'custRequire', index:'a.cust_require', width:150, align:"left"},
+		{header:'${text("客户要求")}', name:'custRequire', index:'a.cust_require', width:150, align:"center"},
 		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
-		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("申请状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_apply_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
-		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
-		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
-			var actions = [];
-			<% if(hasPermi('offer:offerC:edit')){ %>
-				actions.push('<a href="${ctx}/offer/offerC/form?id='+row.id+'" class="btnList" title="${text("编辑报价")}"><i class="fa fa-pencil"></i></a>&nbsp;');
-				if (row.status == Global.STATUS_NORMAL){
-					actions.push('<a href="${ctx}/offer/offerC/disable?id='+row.id+'" class="btnList" title="${text("停用报价")}" data-confirm="${text("确认要停用该报价吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
-				}
-				if (row.status == Global.STATUS_DISABLE){
-					actions.push('<a href="${ctx}/offer/offerC/enable?id='+row.id+'" class="btnList" title="${text("启用报价")}" data-confirm="${text("确认要启用该报价吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
-				}
-				actions.push('<a href="${ctx}/offer/offerC/delete?id='+row.id+'" class="btnList" title="${text("删除报价")}" data-confirm="${text("确认要删除该报价吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
-			<% } %>
-			return actions.join('');
-		}}
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"center"},
+		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"center"}
 	],
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){

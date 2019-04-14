@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '订购管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '订购审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('订购管理')}
+				<i class="fa fa-list-alt"></i> ${text('订购审批')}
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -104,12 +104,16 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("合同编号")}', name:'contractCode', index:'a.contract_code', width:150, align:"left",frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/purchase/purchaseC/checkForm?id='+row.id+'" class="btnList" data-title="${text("审批订购")}">'+(val||row.id)+'</a>';
+			if(row.statu==1){
+			    return '<a href="${ctx}/purchase/purchaseC/checkForm?id='+row.id+'" class="btnList" data-title="${text("审批订购")}">'+(val||row.id)+'</a>';
+			}else{
+				return row.contractCode;
+			}
 		}},
 		{header:'${text("价格条款")}', name:'priceTerm', index:'a.price_term', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('trading_price_term')}, val, '${text("未知")}', true);
 		}},
-		{header:'${text("总金额")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("总金额(￥)")}', name:'totalAmount', index:'a.total_amount', width:150, align:"right", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
 		{header:'${text("发货时间")}', name:'deliveryTime', index:'a.delivery_time', width:150, align:"center"},
@@ -128,21 +132,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
 		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
 		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
-		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
-		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
-			var actions = [];
-			<% if(hasPermi('purchase:purchaseC:edit')){ %>
-				actions.push('<a href="${ctx}/purchase/purchaseC/form?id='+row.id+'" class="btnList" title="${text("编辑订购")}"><i class="fa fa-pencil"></i></a>&nbsp;');
-				if (row.status == Global.STATUS_NORMAL){
-					actions.push('<a href="${ctx}/purchase/purchaseC/disable?id='+row.id+'" class="btnList" title="${text("停用订购")}" data-confirm="${text("确认要停用该订购吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
-				}
-				if (row.status == Global.STATUS_DISABLE){
-					actions.push('<a href="${ctx}/purchase/purchaseC/enable?id='+row.id+'" class="btnList" title="${text("启用订购")}" data-confirm="${text("确认要启用该订购吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
-				}
-				actions.push('<a href="${ctx}/purchase/purchaseC/delete?id='+row.id+'" class="btnList" title="${text("删除订购")}" data-confirm="${text("确认要删除该订购吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
-			<% } %>
-			return actions.join('');
-		}}
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"}
 	],
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){

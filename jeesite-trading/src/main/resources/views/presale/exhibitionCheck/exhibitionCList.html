@@ -1,9 +1,9 @@
-<% layout('/layouts/default.html', {title: '展会管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: '展会审批', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('展会管理')}
+				<i class="fa fa-list-alt"></i> ${text('展会审批')}
 			</div>
 			<div class="box-tools pull-right">
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
@@ -56,8 +56,8 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("展会名称")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
-			if(row.statu!=1){
+		{header:'${text("展会名称")}', name:'name', index:'a.name', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
+			if(row.statu==1){
 				return '<a href="${ctx}/exhibition/exhibitionC/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑展会")}">'+(val||row.id)+'</a>';				
 			}else{
 				return row.name;
@@ -66,32 +66,17 @@ $('#dataGrid').dataGrid({
 		{header:'${text("开始时间")}', name:'startTime', index:'a.start_time', width:150, align:"center"},
 		{header:'${text("结束时间")}', name:'endTime', index:'a.end_time', width:150, align:"center"},
 		{header:'${text("地区")}', name:'district', index:'a.district', width:150, align:"center"},
-		{header:'${text("详细地址")}', name:'address', index:'a.address', width:150, align:"left"},
-		{header:'${text("预算")}', name:'budget', index:'a.budget', width:150, align:"right", formatter: function(val, obj, row, act){
+		{header:'${text("预算(￥)")}', name:'budget', index:'a.budget', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"left"},
+		{header:'${text("审批人")}', name:'checkBy', index:'a.check_by', width:150, align:"center"},
 		{header:'${text("审批时间")}', name:'checkTime', index:'a.check_time', width:150, align:"center"},
-		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"left"},
+		{header:'${text("审批备注")}', name:'checkRemarks', index:'a.check_remarks', width:150, align:"center"},
 		{header:'${text("状态")}', name:'statu', index:'a.statu', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_apply_status')}, val, '${text("未知")}', true);
 		}},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
-		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
-		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
-			var actions = [];
-			<% if(hasPermi('exhibition:exhibitionC:edit')){ %>
-				actions.push('<a href="${ctx}/exhibition/exhibitionC/form?id='+row.id+'" class="btnList" title="${text("编辑展会")}"><i class="fa fa-pencil"></i></a>&nbsp;');
-				if (row.status == Global.STATUS_NORMAL){
-					actions.push('<a href="${ctx}/exhibition/exhibitionC/disable?id='+row.id+'" class="btnList" title="${text("停用展会")}" data-confirm="${text("确认要停用该展会吗？")}"><i class="glyphicon glyphicon-ban-circle"></i></a>&nbsp;');
-				}
-				if (row.status == Global.STATUS_DISABLE){
-					actions.push('<a href="${ctx}/exhibition/exhibitionC/enable?id='+row.id+'" class="btnList" title="${text("启用展会")}" data-confirm="${text("确认要启用该展会吗？")}"><i class="glyphicon glyphicon-ok-circle"></i></a>&nbsp;');
-				}
-				actions.push('<a href="${ctx}/exhibition/exhibitionC/delete?id='+row.id+'" class="btnList" title="${text("删除展会")}" data-confirm="${text("确认要删除该展会吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
-			<% } %>
-			return actions.join('');
-		}}
+		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"center"}
 	],
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){
