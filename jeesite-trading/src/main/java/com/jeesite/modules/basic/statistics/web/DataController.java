@@ -1,5 +1,6 @@
 package com.jeesite.modules.basic.statistics.web;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -7,16 +8,22 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.statistics.entity.Data;
+import com.jeesite.modules.basic.statistics.entity.OutProduct;
 import com.jeesite.modules.basic.statistics.service.DataService;
 
 /**
@@ -30,6 +37,8 @@ public class DataController extends BaseController{
 
 	@Autowired
 	private DataService dataService;
+	@Autowired
+	private PrinterService printerService;
 	
 	/**
 	 * 成本收益页面
@@ -38,6 +47,15 @@ public class DataController extends BaseController{
 	@RequestMapping(value = {"costAndBenefitsChart", ""})
 	public String costAndBenefitsChart(){
 		return "statistics/costAndBenefits/costAndBenefitsChart";
+	}
+	
+	/**
+	 * 出货统计页面
+	 */
+	@RequiresPermissions("Data:Data:view")
+	@RequestMapping(value = {"outProductsChart", ""})
+	public String outProductsChart(){
+		return "statistics/outProducts/outProductsChart";
 	}
 	
 	/**
@@ -188,5 +206,47 @@ public class DataController extends BaseController{
 		model.addAttribute("year", year);
 		model.addAttribute("costAndBenefits", costAndBenefits);
 		return model;
+	}
+	
+	/**
+	 * 按年份统计每月出货表
+	 * @param model
+	 * @param date
+	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	@RequiresPermissions("Data:Data:view")
+	@RequestMapping(value = {"statisticsProudctsByYear", ""})
+	@ResponseBody
+	public List<OutProduct> statisticsProudctsByYear(String date) throws InterruptedException, ExecutionException{
+		//按年份统计
+		String year = date.split("-")[0];
+		GregorianCalendar calendar = new GregorianCalendar(Integer.parseInt(year), 1, 1);
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+	    String dateString = formatter.format(calendar.getTime());
+		Future<List<OutProduct>> dataList =  dataService.statisticsProudctsByYear(dateString);
+		
+		return dataList.get();
+	}
+	
+	/**
+	 * 导出出货表
+	 * @param recordDate
+	 * @return
+	 */
+	@RequiresPermissions("Data:Data:view")
+	@RequestMapping(value = "print")
+	@ResponseBody
+	public String printOutProducts(@RequestParam("recordDate")String recordDate,HttpServletResponse response) {
+		if(recordDate==null||recordDate.isEmpty())
+			return renderResult(Global.FALSE, text("请选择年份！"));
+		try {
+			printerService.printOutProducts(statisticsProudctsByYear(recordDate),recordDate.split("-")[0], response);
+			return renderResult(Global.TRUE, text("打印完成！"));
+		}catch (Exception e) {
+			e.printStackTrace();
+			return renderResult(Global.FALSE, text("打印出错！"));
+		}
 	}
 }

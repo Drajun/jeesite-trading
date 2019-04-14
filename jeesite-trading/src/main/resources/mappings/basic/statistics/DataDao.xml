@@ -7,6 +7,19 @@
 		<result property="datetime" column="datetime"/>
 	</resultMap>
 	
+	<resultMap type="com.jeesite.modules.basic.statistics.entity.OutProduct" id="outProductRM">
+	     <result property="contractCode" column="contract_code"/>
+	     <result property="productName" column="name"/>
+	     <result property="producCode" column="produc_code"/>
+	     <result property="quantity" column="quantity"/>
+	     <result property="packageUnit" column="package_unit"/>
+	     <result property="singlePackageType" column="single_package_type"/>
+	     <result property="datetime" column="datetime"/>
+	     <result property="signTime" column="sign_time"/>
+	     <result property="endAddr" column="end_addr"/>
+	     <result property="custName" column="cust_name"/>
+	</resultMap>
+	
 	<!-- 根据月份查付款金额 -->
 	<select id="statisticsPayByMonth" parameterType="string" resultMap="dataRM">
 		select sum(`actual_amount`) as data, DATE_FORMAT(create_date,'%m') as datetime
@@ -17,10 +30,11 @@
 	
 	<!-- 根据年份查询销售额 -->
 	<select id="statisticsSalesByYear" parameterType="string" resultMap="dataRM">
-		select sum(`total_amount`) as data, DATE_FORMAT(create_date,'%m') as datetime
-		from contract_c 
-		where date_format(create_date,'%Y') = DATE_FORMAT(#{date},'%Y')
-		group by month(create_date);
+	    SELECT SUM(`actual_amount`) AS DATA, DATE_FORMAT(rebill_time,'%m') AS DATETIME
+        FROM rebill_f 
+        WHERE DATE_FORMAT(rebill_time,'%Y') = DATE_FORMAT(#{date},'%Y') 
+              AND rebill_type = '4' OR rebill_type = '5'
+        GROUP BY MONTH(rebill_time);
 	</select>
 	
 	<!-- 根据年份统计成本 -->
@@ -37,5 +51,18 @@
 		from rebill_f 
 		where date_format(rebill_time,'%Y') = DATE_FORMAT(#{date},'%Y')
 		group by month(rebill_time);
+	</select>
+	
+	<!-- 按年份统计每月出货表 -->
+	<select id="statisticsProudctsByYear" parameterType="string" resultMap="outProductRM">
+	   SELECT c.`contract_code`,r.name, r.produc_code,SUM(r.number) AS quantity, package_unit,single_package_type, DATE_FORMAT(c.`create_date`,'%m') AS DATETIME
+              ,DATE_FORMAT(`sign_time`,'%Y-%m-%d') as sign_time,end_addr,(SELECT NAME FROM customers_c WHERE id = customers_c_id) AS cust_name
+        FROM 
+            (SELECT id,contract_code,customers_c_id,sign_time,end_addr,create_date FROM contract_c) c 
+            LEFT JOIN
+            (SELECT reference_id,NAME,produc_code,package_unit,number,single_package_type FROM reference_product_c) r
+            ON c.`id`=r.`reference_id`
+        WHERE DATE_FORMAT(`create_date`,'%Y') = DATE_FORMAT(#{date},'%Y')
+        GROUP BY NAME,contract_code;
 	</select>
 </mapper>

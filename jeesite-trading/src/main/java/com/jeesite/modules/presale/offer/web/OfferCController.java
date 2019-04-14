@@ -246,7 +246,7 @@ public class OfferCController extends BaseController {
 			printerService.printOffer(offerC, response);			
 			return renderResult(Global.TRUE, text("打印报价成功！"));
 		}catch(IOException e){
-			return renderResult(Global.TRUE, text("打印出错！"));
+			return renderResult(Global.FALSE, text("打印出错！"));
 		}
 	}
 	

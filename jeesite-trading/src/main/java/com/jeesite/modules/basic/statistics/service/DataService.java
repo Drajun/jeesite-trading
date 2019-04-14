@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.basic.statistics.dao.DataDao;
 import com.jeesite.modules.basic.statistics.entity.Data;
+import com.jeesite.modules.basic.statistics.entity.OutProduct;
 
 /**
  * 数据统计Service
@@ -154,6 +155,15 @@ public class DataService extends CrudService<DataDao, Data> {
 			point.add(temp);
 		}
 		return new AsyncResult<List<List<Double>>>(point);
+	}
+	
+	/**
+	 * 按年份统计每月出货表
+	 * @param year
+	 * @return
+	 */
+	public Future<List<OutProduct>> statisticsProudctsByYear(String year){
+		return new AsyncResult<List<OutProduct>>(dataDao.statisticsProudctsByYear(year));
 	}
 	
 }

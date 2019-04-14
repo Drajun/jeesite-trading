@@ -243,7 +243,7 @@ public class SendSpecimenCController extends BaseController {
 			printerService.printSend(sendSpecimenC, response);
 			return renderResult(Global.TRUE, text("打印寄样成功！"));
 		}catch (IOException e) {
-			return renderResult(Global.TRUE, text("打印寄样出错！"));
+			return renderResult(Global.FALSE, text("打印寄样出错！"));
 		}
 	}
 	

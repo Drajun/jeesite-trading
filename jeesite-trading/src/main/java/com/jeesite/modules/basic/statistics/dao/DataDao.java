@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.basic.statistics.entity.Data;
+import com.jeesite.modules.basic.statistics.entity.OutProduct;
 
 /**
  * 数据统计DAO接口
@@ -23,4 +24,6 @@ public interface DataDao extends CrudDao<Data> {
 	List<Data> statisticsCostByYear(@Param("date") String date);
 	
 	List<Data> statisticsBenefitsByYear(@Param("date") String date);
+	
+	List<OutProduct> statisticsProudctsByYear(@Param("date") String date);
 }

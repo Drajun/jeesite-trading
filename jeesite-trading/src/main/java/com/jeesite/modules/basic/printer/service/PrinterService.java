@@ -2,6 +2,8 @@ package com.jeesite.modules.basic.printer.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +24,7 @@ import com.jeesite.modules.basic.printer.dao.PrinterDao;
 import com.jeesite.modules.basic.printer.entity.Printer;
 import com.jeesite.modules.basic.printer.tool.BasicExcel;
 import com.jeesite.modules.basic.printer.tool.DownloadUtil;
+import com.jeesite.modules.basic.statistics.entity.OutProduct;
 import com.jeesite.modules.presale.offer.entity.OfferC;
 import com.jeesite.modules.presale.offer.entity.ReferenceProductC;
 import com.jeesite.modules.presale.send.entity.SendProductC;
@@ -70,7 +73,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle offerDate = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getOfferTime().toGMTString());
+		nCell.setCellValue(DateFormat(offerC.getOfferTime()));
 		nCell.setCellStyle(offerDate);
 		//截止日期
 		nCell = nRow.getCell(4);
@@ -90,7 +93,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(4);
 		CellStyle cusAddress = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(customer.getAddress());
+		nCell.setCellValue(nullToEmpty(customer.getAddress()));
 		nCell.setCellStyle(cusAddress);
 		
 		//获取指定列
@@ -116,14 +119,14 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.createCell(1);
 		String way = "";
 		for(String s : offerC.getTransportWays().split(","))
-			way=way+" "+dict.getTransportWay(s);
+			way=way+" "+nullToEmpty(dict.getTransportWay(s));
 		nCell.setCellValue(way);
 		nCell.setCellStyle(transWay);
 		//预计到货
 		nCell = nRow.getCell(4);
 		CellStyle expect = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(offerC.getExpectDeliverTime().toGMTString()+"");
+		nCell.setCellValue(DateFormat(offerC.getExpectDeliverTime()));
 		nCell.setCellStyle(expect);
 		
 		//获取指定列
@@ -132,13 +135,13 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle transBill = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getCarriageCost()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getCarriageCost()));
 		nCell.setCellStyle(transBill);
 		//包装费用
 		nCell = nRow.getCell(4);
 		CellStyle packetCost = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(offerC.getPackageCost()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getPackageCost()));
 		nCell.setCellStyle(packetCost);
 		
 		//获取指定列
@@ -147,13 +150,13 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle inspectionCost = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getInspectionCost()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getInspectionCost()));
 		nCell.setCellStyle(inspectionCost);
 		//报关费用
 		nCell = nRow.getCell(4);
 		CellStyle customsCost = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(offerC.getCustomsCost()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getCustomsCost()));
 		nCell.setCellStyle(customsCost);
 		
 		//获取指定列
@@ -162,13 +165,13 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle insuranceCost = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getInsuranceCost()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getInsuranceCost()));
 		nCell.setCellStyle(insuranceCost);
 		//出口税率
 		nCell = nRow.getCell(4);
 		CellStyle taxRate = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(offerC.getExportTax()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getExportTax()));
 		nCell.setCellStyle(taxRate);
 		
 		//获取指定列
@@ -177,22 +180,22 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle reTax = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getReturnTax()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getReturnTax()));
 		nCell.setCellStyle(reTax);
 		//其他费用
 		nCell = nRow.getCell(4);
 		CellStyle otherCost = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(offerC.getOthersCost()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getOthersCost()));
 		nCell.setCellStyle(otherCost);
 		
 		//获取指定列
 		nRow = sheet.getRow(10);
-		//退税率
+		//总金额
 		nCell = nRow.getCell(4);
 		CellStyle totalAmount = nCell.getCellStyle();
 		nCell = nRow.createCell(4);
-		nCell.setCellValue(offerC.getTotalAmount()+"");
+		nCell.setCellValue(offerC.getTotalAmount());
 		nCell.setCellStyle(totalAmount);
 		
 		//获取指定列
@@ -201,7 +204,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle remark = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getRemarks()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getRemarks()));
 		nCell.setCellStyle(remark);
 		
 		//获取指定列
@@ -210,7 +213,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell = nRow.getCell(1);
 		CellStyle cusRequire = nCell.getCellStyle();
 		nCell = nRow.createCell(1);
-		nCell.setCellValue(offerC.getCustRequire()+"");
+		nCell.setCellValue(nullToEmpty(offerC.getCustRequire()));
 		nCell.setCellStyle(cusRequire);
 		
 		//导出货物
@@ -231,7 +234,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			
 			//规格
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getSpec()+"");
+			nCell.setCellValue(nullToEmpty(productList.get(i).getSpec()));
 			nCell.setCellStyle(cusRequire);
 			
 			//单价
@@ -246,12 +249,12 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			
 			//毛重
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getGrossWeight());
+			nCell.setCellValue(nullToEmpty(productList.get(i).getGrossWeight()));
 			nCell.setCellStyle(deadLineDate);
 			
 			//净重
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getNetWeight());
+			nCell.setCellValue(nullToEmpty(productList.get(i).getNetWeight()));
 			nCell.setCellStyle(deadLineDate);
 		}
 		
@@ -265,7 +268,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 	}
 	
 	/**
-	 * 打印寄样单
+	 * 导出寄样单
 	 * @throws IOException 
 	 */
 	public void printSend(SendSpecimenC sendSpecimenC,HttpServletResponse response) throws IOException{
@@ -292,7 +295,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		//寄样日期
 		nCell = nRow.getCell(2);
 		CellStyle sendTime = nCell.getCellStyle();
-		nCell.setCellValue(sendSpecimenC.getSendTime().toGMTString());
+		nCell.setCellValue(DateFormat(sendSpecimenC.getSendTime()));
 		nCell.setCellStyle(sendTime);
 		//客户名称
 		nCell = nRow.getCell(5);
@@ -323,7 +326,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		//物流单号
 		nCell = nRow.getCell(5);
 		CellStyle logisticBill = nCell.getCellStyle();
-		nCell.setCellValue(sendSpecimenC.getLogisticsBill()+"");
+		nCell.setCellValue(nullToEmpty(sendSpecimenC.getLogisticsBill()));
 		nCell.setCellStyle(logisticBill);
 		
 		//获取指定列
@@ -331,12 +334,12 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		//预计送达时间
 		nCell = nRow.getCell(2);
 		CellStyle expectArrive = nCell.getCellStyle();
-		nCell.setCellValue(sendSpecimenC.getPreArriveTime().toGMTString());
+		nCell.setCellValue(DateFormat(sendSpecimenC.getPreArriveTime()));
 		nCell.setCellStyle(expectArrive);
 		//收货时间
 		nCell = nRow.getCell(5);
 		CellStyle takeGoods = nCell.getCellStyle();
-		nCell.setCellValue(sendSpecimenC.getTakeGoodsTime().toGMTString()+"");
+		nCell.setCellValue(DateFormat(sendSpecimenC.getTakeGoodsTime()));
 		nCell.setCellStyle(takeGoods);
 		
 		
@@ -345,7 +348,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		//备注
 		nCell = nRow.getCell(2);
 		CellStyle remarks = nCell.getCellStyle();
-		nCell.setCellValue(sendSpecimenC.getRemarks()+"");
+		nCell.setCellValue(nullToEmpty(sendSpecimenC.getRemarks()));
 		nCell.setCellStyle(remarks);
 		
 		//导出货物
@@ -365,7 +368,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			
 			//规格
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getSpec()+"");
+			nCell.setCellValue(nullToEmpty(productList.get(i).getSpec()));
 			nCell.setCellStyle(address);
 			
 			//单价
@@ -375,17 +378,17 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			
 			//包装单位
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getPackageUnit()+"");
+			nCell.setCellValue(nullToEmpty(productList.get(i).getPackageUnit()));
 			nCell.setCellStyle(totalAmount);
 			
 			//毛重
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getGrossWeight());
+			nCell.setCellValue(nullToEmpty(productList.get(i).getGrossWeight()));
 			nCell.setCellStyle(totalAmount);
 			
 			//净重
 			nCell = nRow.createCell(colNo++);
-			nCell.setCellValue(productList.get(i).getNetWeight());
+			nCell.setCellValue(nullToEmpty(productList.get(i).getNetWeight()));
 			nCell.setCellStyle(totalAmount);
 			
 			//数量
@@ -404,7 +407,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 	}
 	
 	/**
-	 * 打印销售合同
+	 * 导出销售合同
 	 * @throws IOException 
 	 */
 	public void printSalesContract(ContractC contractC,HttpServletResponse response) throws IOException{
@@ -440,7 +443,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		//合同日期
 		nCell = nRow.getCell(4);
 		CellStyle contractDate = nCell.getCellStyle();
-		nCell.setCellValue(contractC.getSignTime().toGMTString()+"");
+		nCell.setCellValue(DateFormat(contractC.getSignTime()));
 		nCell.setCellStyle(contractDate);
 		
 		//获取指定列
@@ -456,7 +459,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		//客户地址
 		nCell = nRow.getCell(1);
 		CellStyle custAddress = nCell.getCellStyle();
-		nCell.setCellValue(customer.getAddress());
+		nCell.setCellValue(nullToEmpty(customer.getAddress()));
 		nCell.setCellStyle(custAddress);
 		
 		//获取指定列
@@ -516,7 +519,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			nRow.setHeightInPoints(30);
 			//创建该单元格并赋值
 			nCell = nRow.createCell(0);
-			nCell.setCellValue(productList.get(i).getSpec());
+			nCell.setCellValue(nullToEmpty(productList.get(i).getSpec()));
 			nCell.setCellStyle(name);
 			nCell = nRow.createCell(3);
 			nCell.setCellValue("（装运数量允许有    %的增减）");
@@ -534,9 +537,9 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			//创建该单元格并赋值
 			nCell = nRow.createCell(0);
 			StringBuffer sb = new StringBuffer();
-			sb.append("包装单位：").append(dict.getPackageUnit(productList.get(i).getPackageUnit().trim()));
-			sb.append("；单件包装方式：").append(dict.getSinglePackage(productList.get(i).getSinglePackageType().trim()));
-			sb.append("；内包装方式：").append(dict.getSinglePackage(productList.get(i).getInnerPackageType().trim()));
+			sb.append("包装单位：").append(nullToEmpty(dict.getPackageUnit(productList.get(i).getPackageUnit().trim())));
+			sb.append("；单件包装方式：").append(nullToEmpty(dict.getSinglePackage(productList.get(i).getSinglePackageType().trim())));
+			sb.append("；内包装方式：").append(nullToEmpty(dict.getSinglePackage(productList.get(i).getInnerPackageType().trim())));
 			nCell.setCellValue(sb.toString());
 			nCell.setCellStyle(name);
 			nCell = nRow.createCell(3);
@@ -565,7 +568,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell.setCellValue(nCell2.getStringCellValue());
 		nCell.setCellStyle(custAddress);
 		nCell = nRow.createCell(2);
-		nCell.setCellValue(contractC.getShipmentTime().toGMTString());
+		nCell.setCellValue(DateFormat(contractC.getShipmentTime()));
 		nCell.setCellStyle(shipmentTime);
 		
 		nRow2 = sheet2.getRow(20);
@@ -672,7 +675,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell.setCellValue(nCell2.getStringCellValue());
 		nCell.setCellStyle(custAddress);
 		nCell = nRow.createCell(2);
-		nCell.setCellValue(contractC.getPaymentTime().toGMTString());
+		nCell.setCellValue(DateFormat(contractC.getPaymentTime()));
 		nCell.setCellStyle(payDeadline);
 		
 		nRow2 = sheet2.getRow(26);
@@ -761,7 +764,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell.setCellValue(nCell2.getStringCellValue());
 		nCell.setCellStyle(custAddress);
 		nCell = nRow.createCell(2);
-		nCell.setCellValue(contractC.getBreachContract()+"");
+		nCell.setCellValue(nullToEmpty(contractC.getBreachContract()));
 		nCell.setCellStyle(breach);
 		
 		nRow2 = sheet2.getRow(31);
@@ -912,9 +915,140 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		DownloadUtil du = new DownloadUtil();
 		wb.write(os);
 		du.download(os, response, "销售合同"+contractC.getId()+".xlsx");
-
+		wb.removeSheetAt(1);
 		wb.close();
 		os.close();
 	}
 	
+	
+	/**
+	 * 导出出货表
+	 * @param productList
+	 * @param response
+	 * @throws IOException
+	 */
+	public void printOutProducts(List<OutProduct> productList,String year,HttpServletResponse response) throws IOException{
+		//初始化，获取工作页
+		be = new BasicExcel();
+		Workbook wb = be.initWork("出货表Template");
+		Sheet sheet = wb.getSheetAt(0);
+				
+		Row nRow = null;
+		Cell nCell = null;
+		int rowNo= 2;
+		int colNo = 0;
+		
+		//初始化字典
+		dict.init();
+		
+		//设置标题
+		nRow = sheet.getRow(0);
+		nCell = nRow.getCell(0);
+		CellStyle title = nCell.getCellStyle();
+		nCell.setCellValue(year+"年长河商贸出货表");
+		nCell.setCellStyle(title);
+		
+		//获取单元格样式
+		nRow = sheet.getRow(2);
+		nCell = nRow.getCell(0);
+		CellStyle style = nCell.getCellStyle();
+
+		for(int i=0;i<productList.size();i++) {
+			colNo=0;
+			nRow = sheet.createRow(rowNo++);
+			nRow.setHeightInPoints(25);
+			//序号
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(i+1);
+			nCell.setCellStyle(style);
+			
+			//合同号
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(productList.get(i).getContractCode());
+			nCell.setCellStyle(style);
+			
+			//签约日期
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(nullToEmpty(productList.get(i).getSignTime()));
+			nCell.setCellStyle(style);
+			
+			//目的地
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(productList.get(i).getEndAddr());
+			nCell.setCellStyle(style);
+			
+			//客户
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(productList.get(i).getCustName());
+			nCell.setCellStyle(style);
+			
+			//货物名称
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(productList.get(i).getProductName());
+			nCell.setCellStyle(style);
+			
+			//货物编码
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(productList.get(i).getProducCode());
+			nCell.setCellStyle(style);
+			
+			//出货数量
+			nCell = nRow.createCell(colNo++);
+			StringBuffer sb = new StringBuffer();
+			sb.append(productList.get(i).getQuantity()).append(" ");
+			sb.append(nullToEmpty(dict.getPackageUnit(productList.get(i).getPackageUnit())));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(style);
+			
+			//包装方式
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(nullToEmpty(dict.getSinglePackage(productList.get(i).getSinglePackageType())));
+			nCell.setCellStyle(style);
+			
+			//出货月份
+			nCell = nRow.createCell(colNo++);
+			nCell.setCellValue(productList.get(i).getDatetime()+"月");
+			nCell.setCellStyle(style);
+		}
+		
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		DownloadUtil du = new DownloadUtil();
+		wb.write(os);
+		du.download(os, response, "出货表"+year+".xlsx");
+		wb.close();
+		os.close();
+	}
+
+	/**
+	 * null转为""
+	 * @param str
+	 * @return
+	 */
+	private String nullToEmpty(String str) {
+		if(null==str)
+			return "";
+		return str;
+	}
+	
+	/**
+	 * null转为""
+	 * @param dou
+	 * @return
+	 */
+	private String nullToEmpty(Double dou) {
+		if(null==dou)
+			return "";
+		return dou.toString();
+	}
+	/**
+	 * 日期格式
+	 * @param date
+	 * @return
+	 */
+	private String DateFormat(Date date) {
+		if(null==date)
+			return "";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(date);
+	}
 }

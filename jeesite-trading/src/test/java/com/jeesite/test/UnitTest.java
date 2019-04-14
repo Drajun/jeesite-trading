@@ -146,4 +146,12 @@ public class UnitTest {
 		dict.init();
 		System.out.println(dict.getTransportWay("1"));
 	}
+	
+	@Test
+	public void getStringNull() {
+		String s = null;
+		StringBuffer sb = new StringBuffer();
+		sb.append(s);
+		System.out.println(sb.toString());
+	}
 }

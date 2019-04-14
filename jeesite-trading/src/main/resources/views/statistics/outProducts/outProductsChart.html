@@ -1,0 +1,95 @@
+<% layout('/layouts/default.html', {title: '出货统计', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('出货表')}
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="inputForm" action="${ctx}/Data/Data/print" method="post" class="form-horizontal">
+				<div class="form-unit">${text('选择日期')}</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('选择日期')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input id="recordDate" name="recordDate" readonly="true" maxlength="20" class="form-control Wdate required"
+									dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy',isShowClear:false,onpicked:calculate});"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('打 印')}</button>&nbsp;
+                    </div>
+                </div>
+            </div>
+			</#form:form>	
+			<!-- 内容 -->
+            <div class="form-unit">${text('数据预览')}</div>
+            <div class="layui-col-md8" style="width:100%;margin-left:100px;" >
+                <table id="extCProductList" class="table table-striped" style="width:auto" hidden="true">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>合同号</th>
+                            <th>货物名称</th>
+                            <th>货物编码</th>
+                            <th>数量</th>
+                            <th>包装单位</th>
+                            <th>包装方式</th>
+                            <th>出货年月</th>
+                            <th>签约日期</th>
+                            <th>目的地</th>
+                            <th>客户</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_data">
+                    
+                    </tbody>
+            </table>
+        </div>
+		</div>
+	</div>
+</div>
+<% } %>
+
+<script>
+function calculate(){
+	var date = $('#recordDate').val();
+	$.ajax({
+		type:"POST",
+		url:"${ctx}/Data/Data/statisticsProudctsByYear",
+		data:{'date':date},
+		async:false,
+		success : function(data) {
+            var str1 = "";
+            //清空table中的html
+            $("#table_data").html("");
+            for(var i = 0;i<data.length;i++){
+                str1 = "<tr>" + 
+                    "<td>"+ (i+1) + "</td>" +
+                    "<td>"+data[i].contractCode + "</td>" +
+                    "<td>"+data[i].productName + "</td>" +
+                    "<td>"+data[i].producCode + "</td>" +
+                    "<td>"+data[i].quantity + "</td>" +
+                    "<td>"+data[i].packageUnit + "</td>" +
+                    "<td>"+data[i].singlePackageType + "</td>" +
+                    "<td>"+data[i].datetime + "月</td>" +
+                    "<td>"+data[i].signTime + "</td>" +
+                    "<td>"+data[i].endAddr + "</td>" +
+                    "<td>"+data[i].custName + "</td>" +
+                    "</tr>";
+                $("#table_data").append(str1);
+                $("#extCProductList").attr("hidden",false);
+            }
+		}
+	});
+}
+
+
+</script>
