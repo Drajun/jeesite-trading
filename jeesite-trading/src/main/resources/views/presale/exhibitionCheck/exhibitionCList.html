@@ -57,7 +57,7 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("展会名称")}', name:'name', index:'a.name', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			if(row.statu==1){
+			if(row.statu==2){
 				return '<a href="${ctx}/exhibition/exhibitionC/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑展会")}">'+(val||row.id)+'</a>';				
 			}else{
 				return row.name;

@@ -93,7 +93,7 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'${text("寄样时间")}', name:'sendTime', index:'a.send_time', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			if(row.statu==1){
+			if(row.statu==2){
 			    return '<a href="${ctx}/send/sendSpecimenC/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑寄样")}">'+(val||row.id)+'</a>';
 			}else{
 				return row.sendTime;

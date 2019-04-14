@@ -171,6 +171,9 @@ public class ContractCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated ContractC contractC) {
 		if(contractC.getStatu().equals("1")||contractC.getStatu().equals("0")){
+			contractC.setCheckBy("");
+			contractC.setCheckRemarks("");
+			contractC.setCheckTime(new Date(0));
 			//是初次则设置合同编码
 			if(contractC.getId()==null||contractC.getId()==""){
 				String code = "LRB"+new Date().getTime()%9999999+"";				

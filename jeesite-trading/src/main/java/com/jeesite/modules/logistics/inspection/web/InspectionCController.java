@@ -209,6 +209,9 @@ public class InspectionCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated InspectionC inspectionC) {
 		if(inspectionC.getStatu().equals("0")||inspectionC.getStatu().equals("1")){
+			inspectionC.setCheckBy("");
+			inspectionC.setCheckRemarks("");
+			inspectionC.setCheckTime(new Date(0));
 			inspectionCService.save(inspectionC);
 			return renderResult(Global.TRUE, text("保存报检成功！"));
 		}else{

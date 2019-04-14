@@ -223,6 +223,9 @@ public class PurchaseCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated PurchaseC purchaseC) {
 		if(purchaseC.getStatu().equals("1")||purchaseC.getStatu().equals("0")){
+			purchaseC.setCheckBy("");
+			purchaseC.setCheckRemarks("");
+			purchaseC.setCheckTime(new Date(0));
 			//是初次则设置合同编码
 			if(purchaseC.getId()==null||purchaseC.getId()==""){
 				String code = "LRP"+new Date().getTime()%9999999+"";				

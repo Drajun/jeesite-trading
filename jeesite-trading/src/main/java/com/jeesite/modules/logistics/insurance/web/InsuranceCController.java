@@ -121,6 +121,9 @@ public class InsuranceCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated InsuranceC insuranceC) {
 		if(insuranceC.getStatu().equals("1")||insuranceC.getStatu().equals("0")){
+			insuranceC.setCheckBy("");
+			insuranceC.setCheckRemarks("");
+			insuranceC.setCheckTime(new Date(0));
 			insuranceCService.save(insuranceC);
 			return renderResult(Global.TRUE, text("保存保险成功！"));
 		}else{

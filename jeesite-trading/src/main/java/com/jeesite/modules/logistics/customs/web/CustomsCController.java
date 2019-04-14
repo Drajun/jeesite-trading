@@ -129,6 +129,9 @@ public class CustomsCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated CustomsC customsC) {
 		if(customsC.getStatu().equals("1")||customsC.getStatu().equals("0")){
+			customsC.setCheckBy("");
+			customsC.setCheckRemarks("");
+			customsC.setCheckTime(new Date(0));
 			customsCService.save(customsC);
 			return renderResult(Global.TRUE, text("保存报关成功！"));
 		}else{

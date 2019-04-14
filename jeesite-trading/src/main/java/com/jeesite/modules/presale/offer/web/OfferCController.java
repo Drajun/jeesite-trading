@@ -169,6 +169,9 @@ public class OfferCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated OfferC offerC) {
 		if(offerC.getStatu().equals("1")||offerC.getStatu().equals("2")){
+			offerC.setCheckBy("");
+			offerC.setCheckRemarks("");
+			offerC.setCheckTime(new Date(0));
 			offerCService.save(offerC);
 			return renderResult(Global.TRUE, text("保存报价成功！"));
 		}else{

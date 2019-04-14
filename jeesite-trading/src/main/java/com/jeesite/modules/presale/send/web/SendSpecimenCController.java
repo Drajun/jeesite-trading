@@ -169,6 +169,9 @@ public class SendSpecimenCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated SendSpecimenC sendSpecimenC) {
 		if(sendSpecimenC.getStatu().equals("1")||sendSpecimenC.getStatu().equals("2")){
+			sendSpecimenC.setCheckBy("");
+			sendSpecimenC.setCheckRemarks("");
+			sendSpecimenC.setCheckTime(new Date(0));
 			sendSpecimenCService.save(sendSpecimenC);			
 			return renderResult(Global.TRUE, text("保存寄样成功！"));
 		}else{

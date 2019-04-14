@@ -4,12 +4,15 @@
 package com.jeesite.modules.presale.exhibition.entity;
 
 import javax.validation.constraints.NotBlank;
+
+import org.apache.ibatis.type.JdbcType;
 import org.hibernate.validator.constraints.Length;
 import java.util.Date;
 import com.jeesite.common.mybatis.annotation.JoinTable;
 import com.jeesite.common.mybatis.annotation.JoinTable.Type;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
@@ -30,7 +33,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="address", attrName="address", label="详细地址", isQuery=false),
 		@Column(name="budget", attrName="budget", label="预算", isQuery=false),
 		@Column(name="check_by", attrName="checkBy", label="审批人", isQuery=false),
-		@Column(name="check_time", attrName="checkTime", label="审批时间", isQuery=false),
+		@Column(name="check_time", attrName="checkTime", label="审批时间",isQuery=false),
 		@Column(name="check_remarks", attrName="checkRemarks", label="审批备注", isQuery=false),
 		@Column(includeEntity=DataEntity.class),
 		@Column(name="statu", attrName="statu", label="展会申请状态", isQuery=false),

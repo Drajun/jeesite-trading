@@ -106,6 +106,9 @@ public class PaybillFController extends BaseController {
 	@ResponseBody
 	public String save(@Validated PaybillF paybillF) {
 		if(paybillF.getStatu().equals("1")||paybillF.getStatu().equals("0")){
+			paybillF.setCheckBy("");
+			paybillF.setCheckRemarks("");
+			paybillF.setCheckTime(new Date(0));
 			//是初次则设置付款单编码
 			if(paybillF.getId()==null||paybillF.getId()==""){
 				String code = "PBF"+new Date().getTime()%999999999+"";				

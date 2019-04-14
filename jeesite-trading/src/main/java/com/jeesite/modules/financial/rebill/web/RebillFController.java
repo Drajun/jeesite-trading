@@ -106,6 +106,9 @@ public class RebillFController extends BaseController {
 	@ResponseBody
 	public String save(@Validated RebillF rebillF) {
 		if(rebillF.getStatu().equals("1")||rebillF.getStatu().equals("0")){
+			rebillF.setCheckBy("");
+			rebillF.setCheckRemarks("");
+			rebillF.setCheckTime(new Date(0));
 			//是初次则设置收款单编码
 			if(rebillF.getId()==null||rebillF.getId()==""){
 				String code = "RBF"+new Date().getTime()%999999999+"";				

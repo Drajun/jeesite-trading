@@ -229,6 +229,9 @@ public class ConsignCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated ConsignC consignC) {
 		if(consignC.getStatu().equals("0")||consignC.getStatu().equals("1")){
+			consignC.setCheckBy("");
+			consignC.setCheckRemarks("");
+			consignC.setCheckTime(new Date(0));
 			consignCService.save(consignC);
 			return renderResult(Global.TRUE, text("保存托运成功！"));
 		}else{

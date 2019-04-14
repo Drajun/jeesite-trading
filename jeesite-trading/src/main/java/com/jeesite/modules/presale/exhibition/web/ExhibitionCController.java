@@ -107,6 +107,9 @@ public class ExhibitionCController extends BaseController {
 	@ResponseBody
 	public String save(@Validated ExhibitionC exhibitionC) {
 		if(exhibitionC.getStatu().equals("1")||exhibitionC.getStatu().equals("2")){
+			exhibitionC.setCheckBy("");
+			exhibitionC.setCheckRemarks("");
+			exhibitionC.setCheckTime(new Date(0));
 			exhibitionCService.save(exhibitionC);
 			return renderResult(Global.TRUE, text("保存展会成功！"));
 		}else{
