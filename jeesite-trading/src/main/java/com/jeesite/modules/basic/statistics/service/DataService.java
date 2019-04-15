@@ -74,6 +74,14 @@ public class DataService extends CrudService<DataDao, Data> {
 	}
 	
 	/**
+	 * 根据月份统计各销售人员销售额
+	 * @return
+	 */
+	public Future<List<Data>> statisticsSellerRankingByMonth(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return new AsyncResult<List<Data>>(dataDao.statisticsSellerRankingByMonth(sdf.format(date)));
+	}
+	/**
 	 * 相关系数计算
 	 */
 	@Async("taskExecutor")

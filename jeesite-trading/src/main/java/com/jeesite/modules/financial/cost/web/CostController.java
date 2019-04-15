@@ -4,9 +4,12 @@
 package com.jeesite.modules.financial.cost.web;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -134,13 +137,19 @@ public class CostController extends BaseController {
 	@RequiresPermissions("cost:cost:view")
 	@RequestMapping(value="statisticPayAmount")
 	@ResponseBody
-	public Map<String, String> statisticPayAmount(String date){
-		GregorianCalendar calendar = new GregorianCalendar(Integer.parseInt(date.split("-")[0]), Integer.parseInt(date.split("-")[1])-1, 1);
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
-	    String dateString = formatter.format(calendar.getTime());
-	    Data data = dataService.statisticsPayByMonth(dateString);
+	public Map<String, String> statisticPayAmount(Date date){
+		//GregorianCalendar calendar = new GregorianCalendar(Integer.parseInt(date.split("-")[0]), Integer.parseInt(date.split("-")[1])-1, 1);
+	    //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+	    //String dateString = formatter.format(calendar.getTime());
+	    Future<Data> data = dataService.statisticsPayByMonth(date);
 	    Map<String, String> map = new HashMap<String, String>();
-	    map.put("data", String.valueOf(data.getData()));
+	    try {
+			map.put("data", String.valueOf(data.get().getData()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			map.put("message", "统计出错");
+		}
 		return map;
 	}
 }

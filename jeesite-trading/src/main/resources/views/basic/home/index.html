@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col-md-3 col-sm-6 col-xs-12">
 			<div class="info-box">
-				<span class="info-box-icon bg-aqua"><i class="fa fa-cog"></i></span>
+				<span class="info-box-icon bg-aqua"><i class="fa fa-jpy"></i></span>
 				<div class="info-box-content">
 					<span class="info-box-text">本月总营收</span>
 					<span class="info-box-number">￥${totalRe}</span>
@@ -14,7 +14,7 @@
 		</div>
 		<div class="col-md-3 col-sm-6 col-xs-12">
 			<div class="info-box">
-				<span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+				<span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
 				<div class="info-box-content">
 					<span class="info-box-text">本月总成本</span>
 					<span class="info-box-number">￥${totalPay}</span>
@@ -27,10 +27,10 @@
 
 		<div class="col-md-3 col-sm-6 col-xs-12">
 			<div class="info-box">
-				<span class="info-box-icon bg-green"><i class="fa fa-internet-explorer"></i></span>
+				<span class="info-box-icon bg-green"><i class="fa fa-flag-checkered"></i></span>
 				<div class="info-box-content">
 					<span class="info-box-text">本月总利润</span>
-					<span class="info-box-number">￥${totalBenefits}</span>
+					<span class="info-box-number">${totalBenefits}</span>
 				</div>
 			</div>
 		</div>
@@ -65,75 +65,9 @@
 					<div class="row">
 						<div class="col-md-8">
 							<div class="chart">
-								<div id="myChart" style="height:230px;width:99%"></div>
-								<script src="${ctxStatic}/echarts/4.2/echarts.simple.min.js"></script>
-								<script>
-									var option = {
-									    title : {
-									        text: '2017-5'
-									    },
-									    tooltip : {
-									        trigger: 'axis'
-									    },
-									    legend: {
-									        data:['意向','预购','成交']
-									    },
-									    toolbox: {
-									        show : true,
-									        feature : {
-									            mark : {show: true},
-									            dataView : {show: true, readOnly: false},
-									            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-									            restore : {show: true},
-									            saveAsImage : {show: true}
-									        }
-									    },
-									    calculable : true,
-									    grid : {
-									    	top: '49',
-									    	right: '20',
-									    	bottom: '30'
-									    },
-									    xAxis : [
-									        {
-									            type : 'category',
-									            boundaryGap : false,
-									            data : ['周一','周二','周三','周四','周五','周六','周日']
-									        }
-									    ],
-									    yAxis : [
-									        {
-									            type : 'value'
-									        }
-									    ],
-									    series : [
-									        {
-									            name:'成交',
-									            type:'line',
-									            smooth:true,
-									            itemStyle: {normal: {areaStyle: {type: 'default'}}},
-									            data:[10, 12, 21, 54, 260, 830, 710]
-									        },
-									        {
-									            name:'预购',
-									            type:'line',
-									            smooth:true,
-									            itemStyle: {normal: {areaStyle: {type: 'default'}}},
-									            data:[30, 182, 434, 791, 390, 30, 10]
-									        },
-									        {
-									            name:'意向',
-									            type:'line',
-									            smooth:true,
-									            itemStyle: {normal: {areaStyle: {type: 'default'}}},
-									            data:[1320, 1132, 601, 234, 120, 90, 20]
-									        }
-									     ]
-									};
-									// 基于准备好的dom，初始化echarts实例
-							        var myChart = echarts.init(document.getElementById('myChart'));
-							        myChart.setOption(option);
-								</script>
+								<div id="sellerRanking" style="height:230px;width:99%">
+								    <!-- 统计图 -->
+								</div>
 							</div>
 						</div>
 						<div class="col-md-4">
@@ -212,10 +146,63 @@
 	&copy; ${@DateUtils.getYear()} ${@Global.getConfig('productName')} - Powered By <a href="http://jeesite.com">JeeSite</a>
 </footer>
 <% } %>
+<script src="/trading/static/echarts/echarts.min.js"></script>
 <script>
 $(window).resize(function(){
 	var footerHeight  = $('.main-footer').outerHeight() || 0;
 	var windowHeight  = $(window).height();
 	$('.content').css('min-height', windowHeight - footerHeight)
 }).resize();
+
+$(function(){ 
+	//基于准备好的dom，初始化echarts实例
+    var sellerRankingChart = echarts.init(document.getElementById('sellerRanking'));
+	$.ajax({
+		type:"POST",
+		url:"${ctx}/basic/home/sellerRankingByMonth",
+		success : function(result) {
+			option = {
+					title: {
+	                    text: result.year+'销售排行'
+	                },
+				    color: ['#3398DB'],
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+				            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            data : result.name,
+				            axisTick: {
+				                alignWithLabel: true
+				            }
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value'
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'销售额',
+				            type:'bar',
+				            barWidth: '60%',
+				            data: result.value
+				        }
+				    ]
+				};
+			sellerRankingChart.setOption(option);
+		}
+	});
+});
 </script>

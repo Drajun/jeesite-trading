@@ -28,7 +28,7 @@
 	</select>
 	
 	<!-- 根据月份查询收款额 -->
-	<select id="statisticsReByMonth" resultMap="dataRM">
+	<select id="statisticsReByMonth" parameterType="string" resultMap="dataRM">
 		select sum(`actual_amount`) as data, DATE_FORMAT(rebill_time,'%m') as datetime
 		from rebill_f
 		where date_format(rebill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m');
@@ -70,5 +70,13 @@
             ON c.`id`=r.`reference_id`
         WHERE DATE_FORMAT(`create_date`,'%Y') = DATE_FORMAT(#{date},'%Y')
         GROUP BY NAME,contract_code;
+	</select>
+	
+	<!-- 按月份统计销售排行 -->
+	<select id="statisticsSellerRankingByMonth" parameterType="string" resultMap="dataRM" >
+	   SELECT SUM(total_amount) AS data, create_by AS datetime
+        FROM contract_c 
+        WHERE DATE_FORMAT(create_date,'%y-%M') = DATE_FORMAT(#{date},'%y-%M')
+        GROUP BY create_by
 	</select>
 </mapper>

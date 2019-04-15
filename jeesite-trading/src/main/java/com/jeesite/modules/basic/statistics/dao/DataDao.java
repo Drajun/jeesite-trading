@@ -28,4 +28,6 @@ public interface DataDao extends CrudDao<Data> {
 	List<Data> statisticsBenefitsByYear(@Param("date") String date);
 	
 	List<OutProduct> statisticsProudctsByYear(@Param("date") String date);
+	
+	List<Data> statisticsSellerRankingByMonth(@Param("date") String date);
 }

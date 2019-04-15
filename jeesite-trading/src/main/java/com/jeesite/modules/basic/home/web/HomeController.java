@@ -1,14 +1,17 @@
 package com.jeesite.modules.basic.home.web;
 
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Future;
 
-import org.hyperic.sigar.FileSystemMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jeesite.common.shiro.session.SessionDAO;
 import com.jeesite.common.web.BaseController;
@@ -40,34 +43,42 @@ public class HomeController extends BaseController {
 		int activeUser = sessionDAO.getActiveSessions(true, true).size();
 		model.addAttribute("activeUser", activeUser);
 		
-		try{
-			//总营收
-			Future<Data> reData = dataService.statisticsReByMonth(new Date());
-			if(reData.isDone())
-				model.addAttribute("totalRe",reData.get().getData());
-			else
-				model.addAttribute("totalRe", "正在计算");
-			//总成本
-			Future<Data> payData = dataService.statisticsPayByMonth(new Date());
-			if(payData.isDone())
-				model.addAttribute("totalPay",payData.get().getData());
-			else
-				model.addAttribute("totalPay", "正在计算");
+		try {
+			Future<Data> data1 = dataService.statisticsPayByMonth(new Date());
+			Future<Data> data2 = dataService.statisticsReByMonth(new Date());
 			
-			//总利润
-			if(reData.isDone()&&payData.isDone())
-				model.addAttribute("totalBenefits",reData.get().getData()-payData.get().getData());
-			else
-				model.addAttribute("totalBenefits","正在计算");
-			
-		}catch(Exception e){
+			model.addAttribute("totalPay", data1.get().getData());
+			model.addAttribute("totalRe", data2.get().getData());
+			model.addAttribute("totalBenefits",data2.get().getData()-data1.get().getData());
+		}catch(Exception e) {
 			e.printStackTrace();
-			model.addAttribute("totalPay", "正在计算");
-			model.addAttribute("totalRe", "正在计算");
-			model.addAttribute("totalBenefits","正在计算");
+			model.addAttribute("totalPay", "计算出错");
+			model.addAttribute("totalRe", "计算出错");
+			model.addAttribute("totalBenefits","计算出错");
 		}
-		
 		return "/basic/home/index";
+	}
+	
+	@RequestMapping(value="sellerRankingByMonth")
+	@ResponseBody
+	public Model sellerRankingByMonth(Model model){
+		try {
+			Future<List<Data>> sellerDataListFuture = dataService.statisticsSellerRankingByMonth(new Date());			
+			List<Double> values = new ArrayList<>();
+			List<String> names = new ArrayList<>();
+			List<Data> sellerDataList = sellerDataListFuture.get();
+			for(int i=0;i<sellerDataList.size();i++) {
+				values.add(sellerDataList.get(i).getData());
+				names.add(sellerDataList.get(i).getDatetime());
+			}
+			model.addAttribute("value", values);
+			model.addAttribute("name",names);
+			model.addAttribute("year", new SimpleDateFormat("yyyy年MM月").format(new Date()));
+		}catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("message", "统计出错");
+		}
+		return model;
 	}
 	
 }

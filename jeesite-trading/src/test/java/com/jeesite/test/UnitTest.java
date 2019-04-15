@@ -44,8 +44,6 @@ public class UnitTest {
 	Dictionaries dict;
 	@Autowired
 	ContractCService contractCService;
-	@Autowired
-	private StateServerService stateServerService;
 	
 	@Test
 	//按月份统计付款额
@@ -173,5 +171,13 @@ public class UnitTest {
 	public void testDate(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		System.out.println(sdf.format(new Date()));
+	}
+	
+	@Test
+	public void testBenefits() throws Exception{
+		Future<Data> date1 = dataService.statisticsPayByMonth(new Date());
+		Future<Data> date2 = dataService.statisticsReByMonth(new Date());
+		System.out.println(date1.get().getData());
+		System.out.println(date2.get().getData());
 	}
 }
