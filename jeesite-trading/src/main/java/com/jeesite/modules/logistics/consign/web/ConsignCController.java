@@ -27,6 +27,7 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.basic.factory.entity.FactoryC;
 import com.jeesite.modules.basic.factory.service.FactoryCService;
+import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
 import com.jeesite.modules.logistics.consign.entity.ConsignC;
@@ -55,6 +56,8 @@ public class ConsignCController extends BaseController {
 	private ContractCService contractCService;
 	@Autowired
 	private ProductCService productCService;
+	@Autowired
+	private PrinterService printerService;
 	
 	/**
 	 * 获取数据
@@ -272,6 +275,22 @@ public class ConsignCController extends BaseController {
 	public String delete(ConsignC consignC) {
 		consignCService.delete(consignC);
 		return renderResult(Global.TRUE, text("删除托运成功！"));
+	}
+	
+	/**
+	 * 装箱单导出
+	 */
+	@RequiresPermissions("consign:consignC:view")
+	@RequestMapping(value = "print")
+	@ResponseBody
+	public String print(ConsignC consignC,HttpServletResponse response){
+		try{
+			printerService.printPackingList(consignC, response);
+			return renderResult(Global.TRUE, text("打印成功！"));			
+		}catch(Exception e){
+			e.printStackTrace();
+			return renderResult(Global.FALSE, text("打印失败！"));	
+		}
 	}
 	
 }

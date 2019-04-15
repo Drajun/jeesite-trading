@@ -25,12 +25,16 @@ import com.jeesite.modules.basic.printer.entity.Printer;
 import com.jeesite.modules.basic.printer.tool.BasicExcel;
 import com.jeesite.modules.basic.printer.tool.DownloadUtil;
 import com.jeesite.modules.basic.statistics.entity.OutProduct;
+import com.jeesite.modules.logistics.consign.entity.ConsignC;
+import com.jeesite.modules.logistics.consign.entity.ConsignProductC;
+import com.jeesite.modules.logistics.consign.service.ConsignCService;
 import com.jeesite.modules.presale.offer.entity.OfferC;
 import com.jeesite.modules.presale.offer.entity.ReferenceProductC;
 import com.jeesite.modules.presale.send.entity.SendProductC;
 import com.jeesite.modules.presale.send.entity.SendSpecimenC;
 import com.jeesite.modules.purandsell.sales.entity.ContractC;
 import com.jeesite.modules.purandsell.sales.entity.SaleProductC;
+import com.jeesite.modules.purandsell.sales.service.ContractCService;
 
 /**
  * 打印Service
@@ -742,7 +746,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		nCell.setCellStyle(custAddress);
 		nCell = nRow.createCell(2);
 		StringBuffer sb = new StringBuffer();
-		sb.append(customer.getName()).append(";\n");
+		sb.append(DateFormat(contractC.getSignTime())).append(";\n");
 		sb.append(contractC.getEndAddr()).append(";\n");
 		sb.append(contractC.getContractCode()).append(";");
 		nCell.setCellValue(sb.toString());
@@ -1020,6 +1024,184 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 	}
 
 	/**
+	 * 导出装箱单
+	 * @param consignC
+	 * @param response
+	 * @throws IOException
+	 */
+	public void printPackingList(ConsignC consignC,HttpServletResponse response) throws IOException{
+		//初始化，获取工作页
+		be = new BasicExcel();
+		Workbook wb = be.initWork("装箱单Template");
+		Sheet sheet = wb.getSheetAt(0);
+
+				
+		Row nRow = null;
+		Cell nCell = null;
+		int rowNo= 8;
+		int colNo = 0;
+		CellRangeAddress region = null;
+				
+		//货物
+		List<ConsignProductC> productList = consignC.getConsignProductCList();
+		//初始化字典
+		dict.init();
+		
+		//获取指定列
+		nRow = sheet.getRow(2);
+		//装箱单编号
+		nCell = nRow.getCell(0);
+		CellStyle code = nCell.getCellStyle();
+		nCell.setCellValue("No."+consignC.getApplyTime().getTime()%99999999);
+		nCell.setCellStyle(code);
+		
+		//获取指定列
+		nRow = sheet.getRow(3);
+		//装箱单编号
+		nCell = nRow.getCell(0);
+		CellStyle contractCode = nCell.getCellStyle();
+		nCell.setCellValue("Contract No."+nullToEmpty(consignC.getContractCode()));
+		nCell.setCellStyle(contractCode);
+		
+		//获取指定列
+		nRow = sheet.getRow(5);
+		//起始地、目的地
+		nCell = nRow.getCell(0);
+		CellStyle startPlace = nCell.getCellStyle();
+		nCell.setCellValue("From:"+nullToEmpty(consignC.getStartAddr()));
+		nCell.setCellStyle(startPlace);
+		nCell = nRow.getCell(3);
+		CellStyle endPlace = nCell.getCellStyle();
+		nCell.setCellValue("To:"+nullToEmpty(consignC.getEndAddr()));
+		nCell.setCellStyle(endPlace);
+		
+		//获取指定列
+		nRow = sheet.getRow(8);
+		//唛头单元格样式
+		nCell = nRow.getCell(0);
+		CellStyle marks = nCell.getCellStyle();
+		//规格单元格样式
+		nCell = nRow.getCell(2);
+		CellStyle spec = nCell.getCellStyle();
+		//重量单元格样式
+		nCell = nRow.getCell(5);
+		CellStyle weight = nCell.getCellStyle();
+		
+		//获取指定列
+		nRow = sheet.getRow(9);
+		//外箱尺寸单元格样式
+		nCell = nRow.getCell(0);
+		CellStyle measurement = nCell.getCellStyle();
+		//合计单元格样式
+		nCell = nRow.getCell(4);
+		CellStyle total = nCell.getCellStyle();
+		//总计
+		double quantity=0,netWeight=0,grassWeight=0;
+		
+		for(int i=0;i<productList.size();i++) {
+			//创建该行并设置行高
+			nRow = sheet.createRow(rowNo++);
+			nRow.setHeightInPoints(55);
+			
+			//唛头及号码
+			nCell = nRow.createCell(0);
+			StringBuffer sb = new StringBuffer();
+			sb.append(DateFormat(consignC.getApplyTime())).append(";\n");
+			sb.append(consignC.getEndAddr()).append(";\n");
+			sb.append(nullToEmpty(consignC.getContractCode()));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(marks);
+			
+			//货物名称及其编码
+			nCell = nRow.createCell(1);
+			sb = new StringBuffer();
+			sb.append(productList.get(i).getName()).append(";\n");
+			sb.append(productList.get(i).getProducCode());
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(marks);
+			
+			//规格及包装
+			nCell = nRow.createCell(2);
+			sb = new StringBuffer();
+			sb.append(productList.get(i).getSpec()).append(";\n");
+			sb.append("单件包装：").append(nullToEmpty(productList.get(i).getSinglePackageType())).append(";\n");
+			sb.append("内包装：").append(nullToEmpty(productList.get(i).getInnerPackageType()));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(spec);
+			
+			//单价
+			nCell = nRow.createCell(3);
+			nCell.setCellValue(productList.get(i).getPrice());
+			nCell.setCellStyle(marks);
+			
+			//数量
+			nCell = nRow.createCell(4);
+			sb = new StringBuffer();
+			quantity+=productList.get(i).getNumber();
+			sb.append(productList.get(i).getNumber()).append(" ");
+			sb.append(nullToEmpty(productList.get(i).getPackageUnit()));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(marks);
+			
+			//重量
+			nCell = nRow.createCell(5);
+			sb = new StringBuffer();
+			netWeight+=productList.get(i).getNetWeight();
+			grassWeight+=productList.get(i).getGrossWeight();
+			sb.append("净重：").append(nullToEmpty(productList.get(i).getNetWeight())).append(";\n");
+			sb.append("毛重：").append(nullToEmpty(productList.get(i).getGrossWeight()));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(weight);
+			
+			//箱号
+			nCell = nRow.createCell(6);
+			nCell.setCellStyle(weight);
+		}
+		
+		//创建该行并设置行高
+		nRow = sheet.createRow(rowNo++);
+		nRow.setHeightInPoints(50);
+		
+		//货箱尺寸
+		nCell = nRow.createCell(0);
+		nCell.setCellValue("货箱尺寸：\n"+"Measurement");
+		nCell.setCellStyle(measurement);
+		
+		//合计数量
+		nCell = nRow.createCell(4);
+		nCell.setCellValue("合计：\n"+quantity);
+		nCell.setCellStyle(total);
+		
+		//合计重量
+		nCell = nRow.createCell(5);
+		StringBuffer sb = new StringBuffer();
+		sb.append("合计：\n");
+		sb.append("净重：").append(String.format("%.2f",netWeight)).append("\n");
+		sb.append("毛重：").append(String.format("%.2f", grassWeight));
+		nCell.setCellValue(sb.toString());
+		nCell.setCellStyle(spec);
+		
+		//合计箱数
+		nCell = nRow.createCell(6);
+		nCell.setCellValue("合计：");
+		nCell.setCellStyle(total);
+		
+		//创建该行并设置行高
+		nRow = sheet.createRow(++rowNo);
+		nRow.setHeightInPoints(29);
+		nCell = nRow.createCell(5);
+		nCell.setCellValue("出票人签章：\n"+"Signature");
+		nCell.setCellStyle(measurement);
+		
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		DownloadUtil du = new DownloadUtil();
+		wb.write(os);
+		du.download(os, response, "装箱单"+nullToEmpty(consignC.getContractCode())+".xlsx");
+		wb.close();
+		os.close();
+	}
+	
+	/**
 	 * null转为""
 	 * @param str
 	 * @return
@@ -1040,6 +1222,7 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 			return "";
 		return dou.toString();
 	}
+	
 	/**
 	 * 日期格式
 	 * @param date
@@ -1051,4 +1234,5 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.format(date);
 	}
+
 }
