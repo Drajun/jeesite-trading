@@ -30,6 +30,8 @@ public class ContractCService extends CrudService<ContractCDao, ContractC> {
 	private SaleProductCDao saleProductCDao;
 	@Autowired
 	private ProductCDao productDao;
+	@Autowired
+	private ContractCDao contractDao;
 	/**
 	 * 获取单条数据
 	 * @param contractC
@@ -119,6 +121,17 @@ public class ContractCService extends CrudService<ContractCDao, ContractC> {
 		SaleProductC saleProductC = new SaleProductC();
 		saleProductC.setContractCId(contractC);
 		saleProductCDao.delete(saleProductC);
+	}
+	
+	/**
+	 * 根据合同查找合同
+	 * @param contractCode
+	 * @return
+	 */
+	public ContractC get(String contractCode){
+		if(contractCode==null||contractCode.isEmpty())
+			return null;
+		return contractDao.getContractByCode(contractCode);
 	}
 	
 }

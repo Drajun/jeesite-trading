@@ -3,6 +3,8 @@
  */
 package com.jeesite.modules.purandsell.sales.dao;
 
+import io.lettuce.core.dynamic.annotation.Param;
+
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.purandsell.sales.entity.ContractC;
@@ -14,5 +16,5 @@ import com.jeesite.modules.purandsell.sales.entity.ContractC;
  */
 @MyBatisDao
 public interface ContractCDao extends CrudDao<ContractC> {
-	
+	public ContractC getContractByCode(@Param("code")String code);
 }

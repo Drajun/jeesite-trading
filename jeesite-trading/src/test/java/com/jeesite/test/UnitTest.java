@@ -17,10 +17,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jeesite.modules.Application;
 import com.jeesite.modules.basic.printer.service.Dictionaries;
-import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.statistics.dao.DataDao;
 import com.jeesite.modules.basic.statistics.entity.Data;
 import com.jeesite.modules.basic.statistics.service.DataService;
+import com.jeesite.modules.purandsell.sales.entity.ContractC;
+import com.jeesite.modules.purandsell.sales.service.ContractCService;
 
 /**
  * 单元测试
@@ -39,6 +40,8 @@ public class UnitTest {
 	DataService dataService;
 	@Autowired
 	Dictionaries dict;
+	@Autowired
+	ContractCService contractCService;
 	
 	@Test
 	//按月份统计付款额
@@ -153,5 +156,12 @@ public class UnitTest {
 		StringBuffer sb = new StringBuffer();
 		sb.append(s);
 		System.out.println(sb.toString());
+	}
+	
+	@Test
+	public void testGetContractByCode(){
+		String code = "LR8";
+		ContractC contractC = contractCService.get(code);
+		System.out.println(contractC==null?"null":contractC.getId());
 	}
 }

@@ -102,7 +102,7 @@
                             <label class="control-label col-sm-4" title="">
                                 <span class="required ">*</span> ${text('运输方式')}：<i class="fa icon-question hide"></i></label>
                             <div class="col-sm-8">
-                                <#form:select disabled="disabled" multiple="true" path="transportWay" blankOption="true" dictType="trading_transport_way" class="form-control required" />
+                                <#form:select multiple="true" path="transportWay" blankOption="true" dictType="trading_transport_way" class="form-control required" />
                             </div>
                         </div>
                     </div>
@@ -151,6 +151,15 @@
                     </div>
                 </div>
 				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('销售合同')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input readonly="true" path="salesContractCode" class="form-control" />
+							</div>
+						</div>
+					</div>
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label class="control-label col-sm-4" title="">

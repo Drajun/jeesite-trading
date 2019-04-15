@@ -218,6 +218,16 @@ public class ConsignCController extends BaseController {
 			consignC.setCheckBy(user.getUserName());
 			consignC.setCheckTime(new Date());
 			consignCService.save(consignC);
+			
+			//更改销售合同状态
+			if(consignC.getStatu().equals("2")){
+				ContractC contract = contractCService.get(consignC.getContractCode());
+				if(contract!=null&&contract.getId()!=null){
+					contract.setStatu("8");
+					contractCService.save(contract);					
+				}
+			}
+			
 			return renderResult(Global.TRUE, text("保存审批成功！"));
 		}else{
 			return renderResult(Global.FALSE, text("审批请选择通过或驳回！"));	

@@ -23,6 +23,8 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.financial.rebill.entity.RebillF;
 import com.jeesite.modules.financial.rebill.service.RebillFService;
+import com.jeesite.modules.purandsell.sales.entity.ContractC;
+import com.jeesite.modules.purandsell.sales.service.ContractCService;
 import com.jeesite.modules.sys.entity.User;
 import com.jeesite.modules.sys.utils.UserUtils;
 
@@ -37,6 +39,8 @@ public class RebillFController extends BaseController {
 
 	@Autowired
 	private RebillFService rebillFService;
+	@Autowired
+	private ContractCService contractCService;
 	
 	/**
 	 * 获取数据
@@ -133,6 +137,16 @@ public class RebillFController extends BaseController {
 			rebillF.setCheckBy(user.getUserName());
 			rebillF.setCheckTime(new Date());
 			rebillFService.save(rebillF);
+			
+			//改变销售合同状态
+			if(rebillF.getStatu().equals("2")&&rebillF.getRebillType().equals("5")){
+				ContractC contract = contractCService.get(rebillF.getBillCode());
+				if(contract!=null&&contract.getId()!=null){
+					contract.setStatu("D");
+					contractCService.save(contract);
+				}
+			}
+			
 			return renderResult(Global.TRUE, text("保存审批成功！"));
 		}else{
 			return renderResult(Global.FALSE, text("审批请选择通过或驳回！"));	

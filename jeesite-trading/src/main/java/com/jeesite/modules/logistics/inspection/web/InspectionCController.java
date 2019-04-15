@@ -231,6 +231,16 @@ public class InspectionCController extends BaseController {
 			inspectionC.setCheckBy(user.getUserName());
 			inspectionC.setCheckTime(new Date());
 			inspectionCService.save(inspectionC);
+			
+			//改变合同状态
+			if(inspectionC.getStatu().equals("2")){
+				ContractC contract = contractCService.get(inspectionC.getContractCode());
+				if(contract!=null&&contract.getId()!=null){
+					contract.setStatu("7");
+					contractCService.save(contract);					
+				}
+			}
+			
 			return renderResult(Global.TRUE, text("保存审批成功！"));
 		}else{
 			return renderResult(Global.FALSE, text("审批请选择通过或驳回！"));	

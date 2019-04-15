@@ -151,6 +151,16 @@ public class CustomsCController extends BaseController {
 			customsC.setCheckBy(user.getUserName());
 			customsC.setCheckTime(new Date());
 			customsCService.save(customsC);
+
+			//更改销售合同状态
+			if(customsC.getStatu().equals("2")){
+				ContractC contract = contractCService.get(customsC.getContractCode());
+				if(contract!=null&&contract.getId()!=null){
+					contract.setStatu("A");
+					contractCService.save(contract);					
+				}
+			}
+			
 			return renderResult(Global.TRUE, text("保存审批成功！"));
 		}else{
 			return renderResult(Global.FALSE, text("审批请选择通过或驳回！"));	

@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jeesite.modules.purandsell.sales.dao.ContractCDao">
 	
+	<resultMap type="com.jeesite.modules.purandsell.sales.entity.ContractC" id="contractRM">
+		<id property="id" column="id"/>
+		<result property="contractCode" column="contract_code"/>
+		<result property="customersCId" column="customers_c_id"/>
+		<result property="signTime" column="sign_time"/>
+		<result property="signAddr" column="sign_addr"/>
+		<result property="priceTerm" column="price_term"/>
+		<result property="breachContract" column="breach_contract"/>
+		<result property="totalAmount" column="total_amount"/>
+		<result property="shipmentTime" column="shipment_time"/>
+		<result property="transportWay" column="transport_way"/>
+		<result property="startAddr" column="start_addr"/>
+		<result property="endAddr" column="end_addr"/>
+		<result property="paymentTerm" column="payment_term"/>
+		<result property="paymentTime" column="payment_time"/>
+		<result property="insuranceTerm" column="insurance_term"/>
+		<result property="statu" column="statu"/>
+		<result property="checkTime" column="check_time"/>
+		<result property="checkBy" column="check_by"/>
+		<result property="checkRemarks" column="check_remarks"/>
+	</resultMap>
+	
 	<!-- 查询数据
 	<select id="findList" resultType="ContractC">
 		SELECT ${sqlMap.column.toSql()}
@@ -11,5 +33,9 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+	
+	<select id="getContractByCode"  parameterType="string" resultMap="contractRM">
+		select * from contract_c where contract_code = #{code};
+	</select>
 	
 </mapper>
