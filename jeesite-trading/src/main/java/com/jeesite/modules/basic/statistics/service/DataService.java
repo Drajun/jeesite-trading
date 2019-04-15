@@ -1,6 +1,8 @@
 package com.jeesite.modules.basic.statistics.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -29,10 +31,22 @@ public class DataService extends CrudService<DataDao, Data> {
 	
 	/**
 	 * 根据月份统计付款额
-	 * @param month
+	 * @param date
 	 */
-	public Data statisticsPayByMonth(String month){
-		return dataDao.statisticsPayByMonth(month);
+	@Async
+	public Future<Data> statisticsPayByMonth(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return new AsyncResult<Data>(dataDao.statisticsPayByMonth(sdf.format(date)));
+	}
+	
+	/**
+	 * 根据月份统计收款额
+	 * @param date
+	 */
+	@Async
+	public Future<Data> statisticsReByMonth(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return new AsyncResult<Data>(dataDao.statisticsReByMonth(sdf.format(date)));
 	}
 	
 	/**

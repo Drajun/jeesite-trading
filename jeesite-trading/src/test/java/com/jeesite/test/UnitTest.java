@@ -2,6 +2,7 @@ package com.jeesite.test;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,6 +23,7 @@ import com.jeesite.modules.basic.statistics.entity.Data;
 import com.jeesite.modules.basic.statistics.service.DataService;
 import com.jeesite.modules.purandsell.sales.entity.ContractC;
 import com.jeesite.modules.purandsell.sales.service.ContractCService;
+import com.jeesite.modules.state.service.StateServerService;
 
 /**
  * 单元测试
@@ -42,6 +44,8 @@ public class UnitTest {
 	Dictionaries dict;
 	@Autowired
 	ContractCService contractCService;
+	@Autowired
+	private StateServerService stateServerService;
 	
 	@Test
 	//按月份统计付款额
@@ -163,5 +167,11 @@ public class UnitTest {
 		String code = "LR8";
 		ContractC contractC = contractCService.get(code);
 		System.out.println(contractC==null?"null":contractC.getId());
+	}
+	
+	@Test
+	public void testDate(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		System.out.println(sdf.format(new Date()));
 	}
 }

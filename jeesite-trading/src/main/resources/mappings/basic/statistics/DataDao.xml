@@ -22,10 +22,16 @@
 	
 	<!-- 根据月份查付款金额 -->
 	<select id="statisticsPayByMonth" parameterType="string" resultMap="dataRM">
-		select sum(`actual_amount`) as data, DATE_FORMAT(create_date,'%m') as datetime
+		select sum(`actual_amount`) as data, DATE_FORMAT(paybill_time,'%m') as datetime
 		from paybill_f 
-		where date_format(create_date,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m')
-		group by month(create_date);
+		where date_format(paybill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m');
+	</select>
+	
+	<!-- 根据月份查询收款额 -->
+	<select id="statisticsReByMonth" resultMap="dataRM">
+		select sum(`actual_amount`) as data, DATE_FORMAT(rebill_time,'%m') as datetime
+		from rebill_f
+		where date_format(rebill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m');
 	</select>
 	
 	<!-- 根据年份查询销售额 -->
