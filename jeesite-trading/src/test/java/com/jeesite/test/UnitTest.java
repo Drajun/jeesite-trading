@@ -180,4 +180,12 @@ public class UnitTest {
 		System.out.println(date1.get().getData());
 		System.out.println(date2.get().getData());
 	}
+	
+	@Test
+	public void testDeleteContractByStatu(){
+		ContractC contract = new ContractC();
+		List<ContractC> contractList = contractCService.findList(contract);
+		contractList.removeIf(list->list.getStatu().equals("0")||list.getStatu().equals("1")||list.getStatu().equals("3")||list.getStatu().equals("E")||list.getStatu().equals("F")||list.getStatu().equals("G"));
+		System.out.println(contractList.size());
+	}
 }

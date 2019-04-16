@@ -24,14 +24,16 @@
 	<select id="statisticsPayByMonth" parameterType="string" resultMap="dataRM">
 		select sum(`actual_amount`) as data, DATE_FORMAT(paybill_time,'%m') as datetime
 		from paybill_f 
-		where date_format(paybill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m');
+		where date_format(paybill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m')
+		and statu!='0' and statu!='1' and statu!='3' and statu!='E' and statu!='F' and statu!='G';
 	</select>
 	
 	<!-- 根据月份查询收款额 -->
 	<select id="statisticsReByMonth" parameterType="string" resultMap="dataRM">
 		select sum(`actual_amount`) as data, DATE_FORMAT(rebill_time,'%m') as datetime
 		from rebill_f
-		where date_format(rebill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m');
+		where date_format(rebill_time,'%Y-%m') = DATE_FORMAT(#{date},'%Y-%m')
+		and statu!='0' and statu!='1' and statu!='3' and statu!='E' and statu!='F' and statu!='G';
 	</select>
 	
 	<!-- 根据年份查询销售额 -->
@@ -40,6 +42,7 @@
         FROM rebill_f 
         WHERE DATE_FORMAT(rebill_time,'%Y') = DATE_FORMAT(#{date},'%Y') 
               AND rebill_type = '4' OR rebill_type = '5'
+              and statu!='0' and statu!='1' and statu!='3' and statu!='E' and statu!='F' and statu!='G'
         GROUP BY MONTH(rebill_time);
 	</select>
 	
@@ -56,6 +59,7 @@
 		select sum(`actual_amount`) as data, DATE_FORMAT(rebill_time,'%m') as datetime
 		from rebill_f 
 		where date_format(rebill_time,'%Y') = DATE_FORMAT(#{date},'%Y')
+		and statu!='0' and statu!='1' and statu!='3' and statu!='E' and statu!='F' and statu!='G'
 		group by month(rebill_time);
 	</select>
 	
@@ -64,11 +68,12 @@
 	   SELECT c.`contract_code`,r.name, r.produc_code,SUM(r.number) AS quantity, package_unit,single_package_type, DATE_FORMAT(c.`create_date`,'%m') AS DATETIME
               ,DATE_FORMAT(`sign_time`,'%Y-%m-%d') as sign_time,end_addr,(SELECT NAME FROM customers_c WHERE id = customers_c_id) AS cust_name
         FROM 
-            (SELECT id,contract_code,customers_c_id,sign_time,end_addr,create_date FROM contract_c) c 
+            (SELECT id,contract_code,customers_c_id,sign_time,end_addr,create_date,statu FROM contract_c) c 
             LEFT JOIN
             (SELECT reference_id,NAME,produc_code,package_unit,number,single_package_type FROM reference_product_c) r
             ON c.`id`=r.`reference_id`
         WHERE DATE_FORMAT(`create_date`,'%Y') = DATE_FORMAT(#{date},'%Y')
+        and c.statu!='0' and c.statu!='1' and c.statu!='3' and c.statu!='E' and c.statu!='F' and c.statu!='G'
         GROUP BY NAME,contract_code;
 	</select>
 	
@@ -77,6 +82,7 @@
 	   SELECT SUM(total_amount) AS data, create_by AS datetime
         FROM contract_c 
         WHERE DATE_FORMAT(create_date,'%y-%M') = DATE_FORMAT(#{date},'%y-%M')
+        and statu!='0' and statu!='1' and statu!='3' and statu!='E' and statu!='F' and statu!='G'
         GROUP BY create_by
 	</select>
 </mapper>

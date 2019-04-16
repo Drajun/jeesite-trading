@@ -137,6 +137,7 @@ public class ConsignCController extends BaseController {
 		//合同列表
 		ContractC contract = new ContractC();
 		List<ContractC> contractList = contractCService.findList(contract);
+		contractList.removeIf(list->list.getStatu().equals("0")||list.getStatu().equals("1")||list.getStatu().equals("3")||list.getStatu().equals("E")||list.getStatu().equals("F")||list.getStatu().equals("G"));
 		model.addAttribute("contractList", contractList);
 				
 		//剔除不属于托运的货物
@@ -291,11 +292,30 @@ public class ConsignCController extends BaseController {
 	 * 装箱单导出
 	 */
 	@RequiresPermissions("consign:consignC:view")
-	@RequestMapping(value = "print")
+	@RequestMapping(value = "printPacking")
 	@ResponseBody
-	public String print(ConsignC consignC,HttpServletResponse response){
+	public String printPacking(ConsignC consignC,HttpServletResponse response){
 		try{
 			printerService.printPackingList(consignC, response);
+			return renderResult(Global.TRUE, text("打印成功！"));			
+		}catch(Exception e){
+			e.printStackTrace();
+			return renderResult(Global.FALSE, text("打印失败！"));	
+		}
+	}
+	
+	/**
+	 * 商业发票导出
+	 * @param consignC
+	 * @param response
+	 * @return
+	 */
+	@RequiresPermissions("consign:consignC:view")
+	@RequestMapping(value = "printInvoice")
+	@ResponseBody
+	public String printInvoice(ConsignC consignC,HttpServletResponse response){
+		try{
+			printerService.printInvoice(consignC, response);
 			return renderResult(Global.TRUE, text("打印成功！"));			
 		}catch(Exception e){
 			e.printStackTrace();

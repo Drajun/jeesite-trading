@@ -48,6 +48,8 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 	private CustomersCService customerService;
 	@Autowired
 	private Dictionaries dict;
+	@Autowired
+	private ContractCService contractCService;
 	
 	/**
 	 * 报价单打印
@@ -1039,8 +1041,6 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		Row nRow = null;
 		Cell nCell = null;
 		int rowNo= 8;
-		int colNo = 0;
-		CellRangeAddress region = null;
 				
 		//货物
 		List<ConsignProductC> productList = consignC.getConsignProductCList();
@@ -1199,6 +1199,192 @@ public class PrinterService extends CrudService<PrinterDao, Printer> {
 		du.download(os, response, "装箱单"+nullToEmpty(consignC.getContractCode())+".xlsx");
 		wb.close();
 		os.close();
+	}
+	
+	/**
+	 * 导出发票
+	 * @param consignC
+	 * @param response
+	 * @throws IOException
+	 */
+	public void printInvoice(ConsignC consignC,HttpServletResponse response)throws IOException{
+		//初始化，获取工作页
+		be = new BasicExcel();
+		Workbook wb = be.initWork("商业发票Template");
+		Sheet sheet = wb.getSheetAt(0);
+						
+		Row nRow = null;
+		Cell nCell = null;
+		int rowNo= 8;
+		//合同
+		ContractC contract = null;
+		//客户对象
+		CustomersC customer=null;
+		
+		if(consignC.getContractCode()!=null||consignC.getContractCode().isEmpty()){
+			contract = contractCService.get(consignC.getContractCode());
+			//客户对象
+			customer = customerService.get(new CustomersC(nullToEmpty(contract.getCustomersCId())));			
+		}else{
+			contract = new ContractC();
+			contract.setContractCode("非交易合同");
+			customer = new CustomersC();
+			customer.setName("LONG RIVER BUILDING-MATERIAL TRADING");
+		}
+		
+		//货物
+		List<ConsignProductC> productList = consignC.getConsignProductCList();
+		//初始化字典
+		dict.init();
+				
+		//获取指定列
+		nRow = sheet.getRow(1);
+		//买方栏目
+		nCell = nRow.getCell(0);
+		CellStyle buyer = nCell.getCellStyle();
+		StringBuffer sb = new StringBuffer();
+		sb.append("TO:").append("\n");
+		sb.append(nullToEmpty(customer.getName())).append("\n");
+		sb.append(nullToEmpty(customer.getAddress())).append("\n");
+		sb.append(nullToEmpty(customer.getPhone()));
+		nCell.setCellValue(sb.toString());
+		nCell.setCellStyle(buyer);
+		
+		//获取指定列
+		nRow = sheet.getRow(3);
+		//起始地
+		nCell = nRow.getCell(0);
+		CellStyle from = nCell.getCellStyle();
+		nCell.setCellValue("FROM:"+consignC.getStartAddr());
+		nCell.setCellStyle(from);
+		//日期
+		nCell = nRow.getCell(3);
+		CellStyle date = nCell.getCellStyle();
+		nCell.setCellValue("DATE:"+DateFormat(new Date()));
+		nCell.setCellStyle(date);
+		//日期
+		nCell = nRow.getCell(4);
+		CellStyle code = nCell.getCellStyle();
+		nCell.setCellValue("No."+consignC.getApplyTime().getTime()%99999999);
+		nCell.setCellStyle(code);
+		
+		//获取指定列
+		nRow = sheet.getRow(4);
+		//目的地
+		nCell = nRow.getCell(0);
+		CellStyle to = nCell.getCellStyle();
+		nCell.setCellValue("TO:"+consignC.getEndAddr());
+		nCell.setCellStyle(to);
+		//合同号
+		nCell = nRow.getCell(3);
+		CellStyle contractCode = nCell.getCellStyle();
+		nCell.setCellValue("S/C NO."+consignC.getContractCode());
+		nCell.setCellStyle(contractCode);
+		//信用证号
+		nCell = nRow.getCell(4);
+		CellStyle creditCode = nCell.getCellStyle();
+		nCell.setCellValue("L/C NO."+nullToEmpty(consignC.getLetterCredit()));
+		nCell.setCellStyle(creditCode);
+		
+		//获取指定列
+		nRow = sheet.getRow(5);
+		//运输工具
+		nCell = nRow.getCell(0);
+		CellStyle vessel = nCell.getCellStyle();
+		nCell.setCellValue("BY:"+consignC.getTransportationName());
+		nCell.setCellStyle(vessel);
+		//价格条款
+		nCell = nRow.getCell(3);
+		CellStyle paymentTerm = nCell.getCellStyle();
+		nCell.setCellValue("TERM OF PAYMENT:"+nullToEmpty(contract.getPaymentTerm()));
+		nCell.setCellStyle(paymentTerm);
+		
+		//货物栏样式
+		nRow = sheet.getRow(8);
+		nCell = nRow.getCell(0);
+		CellStyle goodsLine = nCell.getCellStyle();
+		
+		double totalQuantity=0,totalGrass=0,totalAmount=0;
+		
+		for(int i=0;i<productList.size();i++){
+			nRow = sheet.createRow(rowNo++);
+			nRow.setHeightInPoints(45);
+					
+			//序号
+			nCell = nRow.createCell(0);
+			nCell.setCellValue(i+1);
+			nCell.setCellStyle(goodsLine);
+			
+			//唛头
+			nCell = nRow.createCell(1);
+			sb = new StringBuffer();
+			sb.append(DateFormat(contract.getSignTime())).append(";\n");
+			sb.append(contract.getEndAddr()).append(";\n");
+			sb.append(contract.getContractCode()).append(";");
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(goodsLine);
+			
+			//货物描述
+			nCell = nRow.createCell(2);
+			sb = new StringBuffer();
+			sb.append(productList.get(i).getName()).append("\n");
+			sb.append(productList.get(i).getProducCode()).append("\n");
+			sb.append(productList.get(i).getSpec());
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(goodsLine);
+			
+			//数量
+			nCell = nRow.createCell(3);
+			sb = new StringBuffer();
+			totalQuantity+=productList.get(i).getNumber();
+			sb.append(productList.get(i).getNumber()).append(" ").append(nullToEmpty(productList.get(i).getPackageUnit()));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(goodsLine);
+			
+			//包装单位
+			nCell = nRow.createCell(4);
+			sb = new StringBuffer();
+			totalQuantity+=productList.get(i).getNumber();
+			sb.append("单件包装方式：").append(nullToEmpty(dict.getSinglePackage(productList.get(i).getSinglePackageType()))).append("\n");
+			sb.append("内包装方式：").append(nullToEmpty(dict.getSinglePackage(productList.get(i).getInnerPackageType())));
+			nCell.setCellValue(sb.toString());
+			nCell.setCellStyle(goodsLine);
+			
+			//总金额
+			nCell = nRow.createCell(5);
+			sb = new StringBuffer();
+			totalAmount+=productList.get(i).getTotalAmount();
+			nCell.setCellValue("￥"+productList.get(i).getTotalAmount());
+			nCell.setCellStyle(goodsLine);
+			
+			totalGrass+=productList.get(i).getGrossWeight();
+		}
+		
+				
+		//总金额
+		nRow = sheet.createRow(++rowNo);
+		nRow.setHeightInPoints(14);
+		nCell = nRow.createCell(1);
+		nCell.setCellValue("TOTAL AMOUNT:￥"+totalAmount);
+		//总重量
+		nRow = sheet.createRow(++rowNo);
+		nRow.setHeightInPoints(14);
+		nCell = nRow.createCell(1);
+		nCell.setCellValue("TOTAL GRASS WEIGHT(kg):"+totalGrass);
+		//总数量
+		nRow = sheet.createRow(++rowNo);
+		nRow.setHeightInPoints(14);
+		nCell = nRow.createCell(1);
+		nCell.setCellValue("TOTAL QUANTITY:"+totalQuantity);
+		
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		DownloadUtil du = new DownloadUtil();
+		wb.write(os);
+		du.download(os, response, "商业发票"+contract.getContractCode()+".xlsx");
+
+		wb.close();
+		os.close();
+		
 	}
 	
 	/**
