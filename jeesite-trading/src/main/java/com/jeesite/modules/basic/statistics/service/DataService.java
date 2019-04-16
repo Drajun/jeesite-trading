@@ -3,6 +3,7 @@ package com.jeesite.modules.basic.statistics.service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -186,6 +187,66 @@ public class DataService extends CrudService<DataDao, Data> {
 	 */
 	public Future<List<OutProduct>> statisticsProudctsByYear(String year){
 		return new AsyncResult<List<OutProduct>>(dataDao.statisticsProudctsByYear(year));
+	}
+	
+	/**
+	 * 预测下一个月
+	 * @param year
+	 * @param month
+	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	public Future<Data> predictedNextMonth(Date date) throws InterruptedException, ExecutionException{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		GregorianCalendar calendar=null;
+		if(date.getMonth()==0){
+			//若是今年一月，则返回上年本月
+			calendar = new GregorianCalendar(date.getYear()-1, date.getMonth(), date.getDay());
+			return new AsyncResult<Data>(dataDao.statisticsReByMonth(sdf.format(date)));
+		}
+		
+		//统计上一年全年销售总额
+		calendar = new GregorianCalendar(date.getYear()-1, date.getMonth()+1, date.getDay());
+		double preYearTotal = totalAmountByYear(calendar.getTime());
+		
+		//统计上年上一个月
+		calendar = new GregorianCalendar(date.getYear()-1, date.getMonth(), date.getDay());
+		Future<Data> preYearPreMonthData = statisticsReByMonth(calendar.getTime());
+		
+		//统计上年本月
+		calendar = new GregorianCalendar(date.getYear()-1, date.getMonth()+1, date.getDay());
+		Future<Data> preYearThisMonthData = statisticsReByMonth(calendar.getTime());
+		
+		//统计今年上一个月
+		calendar = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
+		Future<Data> thisYearPreMonthData = statisticsReByMonth(calendar.getTime());
+		
+		//上年本月与上年全年的比值
+		double pYtMonth_D_pYTotal_rate = preYearThisMonthData.get().getData()/preYearTotal;
+		//今年预测总额
+		double thisYear_expectTotal = thisYearPreMonthData.get().getData()/(preYearPreMonthData.get().getData()/preYearTotal);
+		
+		//填充数据
+		Data data = new Data();
+		sdf = new SimpleDateFormat("MM");
+		data.setData(pYtMonth_D_pYTotal_rate*thisYear_expectTotal);
+		data.setDatetime("预测"+sdf.format(date));
+		
+		return new AsyncResult<Data>(data);
+	}
+	
+	/**
+	 * 全年销售额
+	 */
+	private double totalAmountByYear(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		List<Data> dataList = dataDao.statisticsSalesByYear(sdf.format(date));
+		double total=0;
+		for(Data d : dataList){
+			total+=d.getData();
+		}
+		return total;
 	}
 	
 }

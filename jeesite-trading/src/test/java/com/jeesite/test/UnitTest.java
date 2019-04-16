@@ -188,4 +188,11 @@ public class UnitTest {
 		contractList.removeIf(list->list.getStatu().equals("0")||list.getStatu().equals("1")||list.getStatu().equals("3")||list.getStatu().equals("E")||list.getStatu().equals("F")||list.getStatu().equals("G"));
 		System.out.println(contractList.size());
 	}
+	
+	@Test
+	public void expectThisMonth() throws InterruptedException, ExecutionException{
+		Future<Data> dataFuture = dataService.predictedNextMonth(new Date());
+		System.out.println(dataFuture.get().getData());
+		System.out.println(dataFuture.get().getDatetime());
+	}
 }

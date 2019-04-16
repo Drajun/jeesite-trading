@@ -28,6 +28,7 @@ import com.jeesite.modules.basic.customers.service.CustomersCService;
 import com.jeesite.modules.basic.printer.service.PrinterService;
 import com.jeesite.modules.basic.product.entity.ProductC;
 import com.jeesite.modules.basic.product.service.ProductCService;
+import com.jeesite.modules.presale.send.entity.SendProductC;
 import com.jeesite.modules.presale.send.entity.SendSpecimenC;
 import com.jeesite.modules.presale.send.service.SendSpecimenCService;
 import com.jeesite.modules.sys.entity.User;
@@ -190,6 +191,20 @@ public class SendSpecimenCController extends BaseController {
 			User user = UserUtils.getUser();
 			sendSpecimenC.setCheckBy(user.getUserName());
 			sendSpecimenC.setCheckTime(new Date());
+			
+			
+			if(sendSpecimenC.getStatu().equals("3")){
+				for(SendProductC p: sendSpecimenC.getSendProductCList()){
+					ProductC product = productCService.get(new ProductC(p.getProductCId()));
+					long num = product.getNumber()-p.getNumber();
+					if(num<0)
+						return renderResult(Global.FALSE, text("样品数量不足！"));
+					else
+						product.setNumber(num);						
+					productCService.save(product);
+				}
+			}
+			
 			sendSpecimenCService.save(sendSpecimenC);
 			return renderResult(Global.TRUE, text("保存审批成功！"));			
 		}else{

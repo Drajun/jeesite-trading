@@ -87,7 +87,7 @@ $('#dataGrid').dataGrid({
 			if(row.statu==1){
 			    return '<a href="${ctx}/paybill/paybillF/checkForm?id='+row.id+'" class="btnList" data-title="${text("编辑付款管理")}">'+(val||row.id)+'</a>';
 			}else{
-				row.paybillCode;
+				return row.paybillCode;
 			}
 		}},
 		{header:'${text("付款时间")}', name:'paybillTime', index:'a.paybill_time', width:150, align:"center"},
