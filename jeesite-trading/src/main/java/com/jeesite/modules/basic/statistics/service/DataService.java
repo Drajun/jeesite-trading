@@ -2,6 +2,7 @@ package com.jeesite.modules.basic.statistics.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -199,33 +200,40 @@ public class DataService extends CrudService<DataDao, Data> {
 	 */
 	public Future<Data> predictedNextMonth(Date date) throws InterruptedException, ExecutionException{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		GregorianCalendar calendar=null;
+		Calendar calendar = Calendar.getInstance();
+		
 		if(date.getMonth()==0){
 			//若是今年一月，则返回上年本月
-			calendar = new GregorianCalendar(date.getYear()-1, date.getMonth(), date.getDay());
-			return new AsyncResult<Data>(dataDao.statisticsReByMonth(sdf.format(date)));
+			calendar.setTime(date);
+			calendar.add(Calendar.YEAR, -1);
+			return new AsyncResult<Data>(dataDao.statisticsReByMonth(sdf.format(calendar)));
 		}
 		
 		//统计上一年全年销售总额
-		calendar = new GregorianCalendar(date.getYear()-1, date.getMonth()+1, date.getDay());
+		calendar.setTime(date);
+		calendar.add(Calendar.YEAR, -1);
 		double preYearTotal = totalAmountByYear(calendar.getTime());
 		
 		//统计上年上一个月
-		calendar = new GregorianCalendar(date.getYear()-1, date.getMonth(), date.getDay());
+		calendar.add(Calendar.MONTH, -1);
 		Future<Data> preYearPreMonthData = statisticsReByMonth(calendar.getTime());
 		
 		//统计上年本月
-		calendar = new GregorianCalendar(date.getYear()-1, date.getMonth()+1, date.getDay());
+		calendar.add(Calendar.MONTH, 1);
 		Future<Data> preYearThisMonthData = statisticsReByMonth(calendar.getTime());
 		
 		//统计今年上一个月
-		calendar = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDay());
+		calendar.add(Calendar.YEAR, 1);
+		calendar.add(Calendar.MONTH, -1);
 		Future<Data> thisYearPreMonthData = statisticsReByMonth(calendar.getTime());
 		
 		//上年本月与上年全年的比值
 		double pYtMonth_D_pYTotal_rate = preYearThisMonthData.get().getData()/preYearTotal;
+		
 		//今年预测总额
-		double thisYear_expectTotal = thisYearPreMonthData.get().getData()/(preYearPreMonthData.get().getData()/preYearTotal);
+		double preYearPreMonth_D_preYearTotal_rate =  preYearPreMonthData.get().getData()/preYearTotal;
+		double thisYear_expectTotal = thisYearPreMonthData.get().getData();
+		thisYear_expectTotal = thisYear_expectTotal/preYearPreMonth_D_preYearTotal_rate;
 		
 		//填充数据
 		Data data = new Data();
