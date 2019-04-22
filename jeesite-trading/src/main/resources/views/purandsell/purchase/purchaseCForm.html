@@ -43,7 +43,7 @@
                             <label class="control-label col-sm-4" title="">
                                 <span class="required ">*</span> ${text('总金额(￥)')}：<i class="fa icon-question hide"></i></label>
                             <div class="col-sm-8">
-                                <#form:input path="totalAmount" class="form-control required number"/>
+                                <#form:input path="totalAmount" min="0" class="form-control required number"/>
                             </div>
                         </div>
                     </div>
@@ -290,8 +290,8 @@ $("#purProductCDataGrid").dataGrid({
 				dataUrl:'${ctx}/purchase/purchaseC/productList'
 			}
 		},
-		{header:'${text("单价")}', name:'price', width:100, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
-		{header:'${text("数量")}', name:'number', width:100, editable:true, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
+		{header:'${text("单价")}', name:'price', width:100, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control number'}},
+		{header:'${text("数量")}', name:'number', width:100, editable:true, edittype:'text', editoptions:{'min':'0','maxlength':'11', 'class':'form-control required digits'}},
 		{header:'${text("总金额")}', name:'totalAmount', width:120, editable:false, edittype:'text', editoptions:{'class':'form-control number'}},
 		{header:'${text("包装单位")}', name:'packageUnit', width:100, 
 			editable:true, edittype:'select', editoptions:{'class':'form-control',
@@ -301,8 +301,8 @@ $("#purProductCDataGrid").dataGrid({
 				}
 			}
 		},
-		{header:'${text("净重")}', name:'netWeight', width:100, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
-		{header:'${text("毛重")}', name:'grossWeight', width:100, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("净重")}', name:'netWeight', width:100, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control required number'}},
+		{header:'${text("毛重")}', name:'grossWeight', width:100, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control required number'}},
 		{header:'${text("单件包装方式")}', name:'singlePackageType', width:160, 
 			editable:true, edittype:'select', editoptions:{'class':'form-control',
 				items: $.merge([{dictLabel:'&nbsp;',dictValue:''}], ${@DictUtils.getDictListJson('trading_single_package')}),

@@ -64,7 +64,7 @@
                             <label class="control-label col-sm-4" title="">
                                 <span class="required hide">*</span> ${text('预算(￥)')}：<i class="fa icon-question hide"></i></label>
                             <div class="col-sm-8">
-                                <#form:input path="budget" class="form-control number"/>
+                                <#form:input path="budget" min="0" class="form-control number"/>
                             </div>
                         </div>
                     </div>

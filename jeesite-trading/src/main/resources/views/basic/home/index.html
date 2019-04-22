@@ -30,7 +30,7 @@
 				<span class="info-box-icon bg-green"><i class="fa fa-flag-checkered"></i></span>
 				<div class="info-box-content">
 					<span class="info-box-text">本月总利润</span>
-					<span class="info-box-number">${totalBenefits}</span>
+					<span class="info-box-number">￥${totalBenefits}</span>
 				</div>
 			</div>
 		</div>
@@ -61,6 +61,7 @@
 						</button>
 					</div>
 				</div>
+				
 				<div class="box-body">
 					<div class="row">
 						<div class="col-md-8">
@@ -105,45 +106,108 @@
 						</div>
 					</div>
 				</div>
+			<!-- 	 
 				<div class="box-footer">
 					<div class="row">
 						<div class="col-sm-3 col-xs-6">
 							<div class="description-block border-right">
-								<span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-								<h5 class="description-header">￥35,210.43</h5>
-								<span class="description-text">总营收</span>
+								<h5 class="description-header">通知</h5>
+								<span class="description-text">
+								    <textarea readonly="true" rows="8" cols="30" style="border:0px">
+                                       
+                                    </textarea>
+								</span>
 							</div>
 						</div>
 						<div class="col-sm-3 col-xs-6">
 							<div class="description-block border-right">
-								<span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-								<h5 class="description-header">￥10,390.90</h5>
-								<span class="description-text">总成本</span>
+								<h5 class="description-header">通知</h5>
+								<span class="description-text">
+								    <textarea readonly="true" rows="8" cols="30" style="border:0px">
+                                       
+                                    </textarea>
+								</span>
 							</div>
 						</div>
 						<div class="col-sm-3 col-xs-6">
 							<div class="description-block border-right">
-								<span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-								<h5 class="description-header">￥24,813.53</h5>
-								<span class="description-text">总利润</span>
+								<h5 class="description-header">通知</h5>
+								<span class="description-text">
+								    <textarea readonly="true" rows="8" cols="30" style="border:0px">
+								       
+								    </textarea>
+								</span>
 							</div>
 						</div>
 						<div class="col-sm-3 col-xs-6">
 							<div class="description-block">
-								<span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
-								<h5 class="description-header">1200</h5>
-								<span class="description-text">目标完成</span>
+								<h5 class="description-header">通知</h5>
+								<span class="description-text">
+								    <textarea readonly="true" rows="8" cols="30" style="border:0px">
+                                       
+                                    </textarea>
+								</span>
 							</div>
 						</div>
 					</div>
 				</div>
+			-->
 			</div>
 		</div>
 	</div>
+    
+    <!-- notify boxes -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-commenting"></i></span>
+                <div class="info-box-content" style="height:200px;">
+                    <span class="info-box-text" title="${notifyTitle1}">${notifyTitle1}</span>
+                    <span class="info-box-number">${notifyContent1}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="fa fa-commenting"></i></span>
+                <div class="info-box-content" style="height:200px;">
+                    <span class="info-box-text" title="${notifyTitle2}">${notifyTitle2}</span>
+                    <span class="info-box-number">${notifyContent2}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="fa fa-commenting"></i></span>
+                <div class="info-box-content" style="height:200px;">
+                    <span class="info-box-text" title="${notifyTitle3}">${notifyTitle3}</span>
+                    <span class="info-box-number">${notifyContent3}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="fa fa-commenting"></i></span>
+                <div class="info-box-content" style="height:200px;">
+                    <span class="info-box-text" title="${notifyTitle4}">${notifyTitle4}</span>
+                    <span class="info-box-number">${notifyContent4}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 <footer class="main-footer m0">
+<!-- 
 	<div class="pull-right hidden-xs">当前版本： ${@Global.getConfig('productVersion')}</div>
 	&copy; ${@DateUtils.getYear()} ${@Global.getConfig('productName')} - Powered By <a href="http://jeesite.com">JeeSite</a>
+ -->
+ <div class="pull-right hidden-xs">当前版本： ${@Global.getConfig('productVersion')}</div>
+    &copy; ${@DateUtils.getYear()} ${@Global.getConfig('productName')} - Powered By <a href="">Drajun.L</a>
 </footer>
 <% } %>
 <script src="/trading/static/echarts/echarts.min.js"></script>
@@ -155,10 +219,12 @@ $(window).resize(function(){
 }).resize();
 
 $(function(){ 
+	
 	//基于准备好的dom，初始化echarts实例
     var sellerRankingChart = echarts.init(document.getElementById('sellerRanking'));
 	$.ajax({
 		type:"POST",
+		dataType:"JSON",
 		url:"${ctx}/basic/home/sellerRankingByMonth",
 		success : function(result) {
 			option = {
@@ -204,5 +270,6 @@ $(function(){
 			sellerRankingChart.setOption(option);
 		}
 	});
+	
 });
 </script>

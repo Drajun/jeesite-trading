@@ -214,17 +214,17 @@ public class DataService extends CrudService<DataDao, Data> {
 		calendar.add(Calendar.YEAR, -1);
 		double preYearTotal = totalAmountByYear(calendar.getTime());
 		
-		//统计上年上一个月
-		calendar.add(Calendar.MONTH, -1);
+		//统计上年一月
+		calendar.set(Calendar.MONTH, 0);
 		Future<Data> preYearPreMonthData = statisticsReByMonth(calendar.getTime());
 		
 		//统计上年本月
-		calendar.add(Calendar.MONTH, 1);
+		calendar.set(Calendar.MONTH, date.getMonth());
 		Future<Data> preYearThisMonthData = statisticsReByMonth(calendar.getTime());
 		
-		//统计今年上一个月
+		//统计今年一月
 		calendar.add(Calendar.YEAR, 1);
-		calendar.add(Calendar.MONTH, -1);
+		calendar.set(Calendar.MONTH, 0);
 		Future<Data> thisYearPreMonthData = statisticsReByMonth(calendar.getTime());
 		
 		//上年本月与上年全年的比值

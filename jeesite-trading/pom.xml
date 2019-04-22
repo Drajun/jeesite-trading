@@ -11,11 +11,11 @@
 	</parent>
 	
 	<artifactId>jeesite-trading</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	
 	<name>JeeSite Trading</name>
-	<url>http://jeesite.com</url>
-	<inceptionYear>2013-Now</inceptionYear>
+	<url>http://jeesite-trading.com</url>
+	<inceptionYear>2018-Now</inceptionYear>
 	
 	<properties>
 		
@@ -33,7 +33,7 @@
 		<!-- 核心模块 -->
 		<dependency>
 			<groupId>com.jeesite</groupId>
-			<artifactId>jeesite-module-core</artifactId>
+			<artifactId>jeesite-core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		
@@ -117,17 +117,17 @@
 	
 	<developers>  
 		<developer>
-			<id>thinkgem</id>
-			<name>WangZhen</name>
-			<email>thinkgem at 163.com</email>
+			<id>Drajun</id>
+			<name>Drajun</name>
+			<email>longlou.d@foxmail.com</email>
 			<roles><role>Project lead</role></roles>
 			<timezone>+8</timezone>  
 		</developer>
 	</developers>
 	
 	<organization>
-		<name>JeeSite</name>
-		<url>http://jeesite.com</url>
+		<name>JeeSite-Trading</name>
+		<url>http://jeesite-trading.com</url>
 	</organization>
 	
 	<repositories>

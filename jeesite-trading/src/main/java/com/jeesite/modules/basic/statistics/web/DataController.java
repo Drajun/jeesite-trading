@@ -3,6 +3,8 @@ package com.jeesite.modules.basic.statistics.web;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -80,6 +82,27 @@ public class DataController extends BaseController{
 				name.add(d.getDatetime()+"月");
 				value.add(d.getData());
 			}
+			
+			//预测月
+			Future<Data> predictedDate = null;
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			int rest = 12-dataList.get().size();
+			if(rest == 12) {
+				calendar = new GregorianCalendar(Integer.parseInt(year), 1, 1);
+				predictedDate = dataService.predictedNextMonth(calendar.getTime());
+			}else {
+				name.remove(name.size()-1);
+				value.remove(value.size()-1);
+				for(int i=0;i<rest;i++) {
+					cal.add(Calendar.MONTH, i);
+					predictedDate = dataService.predictedNextMonth(cal.getTime());
+					name.add(predictedDate.get().getDatetime()+"月");
+					value.add(Double.parseDouble(String.format("%.2f", predictedDate.get().getData())));
+					cal.add(Calendar.MONTH, -i);
+				}
+			}
+			
 			model.addAttribute("year", year);
 			model.addAttribute("name", name);
 			model.addAttribute("value", value);

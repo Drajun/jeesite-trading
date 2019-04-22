@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jeesite.common.shiro.session.SessionDAO;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.basic.notifyc.entity.NotifyC;
+import com.jeesite.modules.basic.notifyc.service.NotifyCService;
 import com.jeesite.modules.basic.statistics.entity.Data;
 import com.jeesite.modules.basic.statistics.service.DataService;
 
@@ -33,6 +35,9 @@ public class HomeController extends BaseController {
 	@Autowired
 	private DataService dataService;
 	
+	@Autowired
+	private NotifyCService notifyCService;
+	
 	/**
 	 * 首页
 	 * @return
@@ -40,6 +45,7 @@ public class HomeController extends BaseController {
 	@RequestMapping(value = "index")
 	public String index(Model model){
 		//在线用户数
+		
 		int activeUser = sessionDAO.getActiveSessions(true, true).size();
 		model.addAttribute("activeUser", activeUser);
 		
@@ -56,6 +62,19 @@ public class HomeController extends BaseController {
 			model.addAttribute("totalRe", "计算出错");
 			model.addAttribute("totalBenefits","计算出错");
 		}
+		
+		//通知
+		
+		NotifyC notify = new NotifyC();
+		List<NotifyC> notifyList = notifyCService.findList(notify);
+		int j=1;
+		for(int i = 0;j<=4;i++) {
+			model.addAttribute("notifyTitle"+j,notifyList.get(i).getTitle());
+			model.addAttribute("notifyContent"+j, notifyList.get(i).getContent());
+			j++;
+		}
+		
+		
 		return "/basic/home/index";
 	}
 	

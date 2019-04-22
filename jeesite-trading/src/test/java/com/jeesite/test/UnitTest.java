@@ -2,6 +2,7 @@ package com.jeesite.test;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -189,10 +190,35 @@ public class UnitTest {
 		System.out.println(contractList.size());
 	}
 	
+	//成本预测
 	@Test
 	public void expectThisMonth() throws InterruptedException, ExecutionException{
 		Future<Data> dataFuture = dataService.predictedNextMonth(new Date());
 		System.out.println(dataFuture.get().getData());
 		System.out.println(dataFuture.get().getDatetime());
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.MONTH, 1);
+		Future<Data> dataFuture1 = dataService.predictedNextMonth(calendar.getTime());
+		System.out.println(dataFuture1.get().getData());
+		System.out.println(dataFuture1.get().getDatetime());
+	}
+	
+	@Test
+	public void expectMoreMonth() throws InterruptedException, ExecutionException {
+		Future<Data> predictedDate = null;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		int rest = 8;
+		for(int i=0;i<rest;i++) {
+			cal.add(Calendar.MONTH, i);
+			System.out.print(cal.get(Calendar.YEAR)+",");
+			System.out.println(cal.get(Calendar.MONTH));
+			predictedDate = dataService.predictedNextMonth(cal.getTime());
+			System.out.println(predictedDate.get().getDatetime()+"月");
+			System.out.println(predictedDate.get().getData());
+			cal.add(Calendar.MONTH, -i);
+		}
 	}
 }

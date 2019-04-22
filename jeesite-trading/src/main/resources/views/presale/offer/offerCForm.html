@@ -61,7 +61,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('总价(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="totalAmount" class="form-control required number"/>
+								<#form:input path="totalAmount" min="0" class="form-control required number"/>
 							</div>
 						</div>
 					</div>
@@ -102,7 +102,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('包装费用(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="packageCost" class="form-control number"/>
+								<#form:input path="packageCost" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -111,7 +111,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('运费(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="carriageCost" class="form-control number"/>
+								<#form:input path="carriageCost" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -122,7 +122,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('商检费用(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="inspectionCost" class="form-control number"/>
+								<#form:input path="inspectionCost" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -131,7 +131,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('报关费用(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="customsCost" class="form-control number"/>
+								<#form:input path="customsCost" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -142,7 +142,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('保险费用(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="insuranceCost" class="form-control number"/>
+								<#form:input path="insuranceCost" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -151,7 +151,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('出口税率(%)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="exportTax" class="form-control number"/>
+								<#form:input path="exportTax" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -162,7 +162,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('退税率(%)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="returnTax" class="form-control number"/>
+								<#form:input path="returnTax" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -171,7 +171,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('其他费用(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="othersCost" class="form-control number"/>
+								<#form:input path="othersCost" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -302,10 +302,10 @@ $("#referenceProductCDataGrid").dataGrid({
 				dataUrl:'${ctx}/offer/offerC/productList'
 			}
 		},
-		{header:'${text("单价")}', name:'price', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
-		{header:'${text("数量")}', name:'number', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
-		{header:'${text("毛重(kg)")}', name:'grossWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
-		{header:'${text("净重(kg)")}', name:'netWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("单价")}', name:'price', width:150, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control number'}},
+		{header:'${text("数量")}', name:'number', width:150, editable:true, edittype:'text', editoptions:{'min':'0','maxlength':'11', 'class':'form-control required digits'}},
+		{header:'${text("毛重(kg)")}', name:'grossWeight', width:150, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control required number'}},
+		{header:'${text("净重(kg)")}', name:'netWeight', width:150, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control required number'}},
 		{header:'${text("备注信息")}', name:'remarks', width:150, editable:true, edittype:'textarea', editoptions:{'maxlength':'500', 'class':'form-control', 'rows':'1'}},
 		{header:'${text("货物编码")}', name:'producCode', width:150, editable:false, edittype:'text'},
 		{header:'${text("规格")}', name:'spec', width:180, editable:false, edittype:'textarea'},

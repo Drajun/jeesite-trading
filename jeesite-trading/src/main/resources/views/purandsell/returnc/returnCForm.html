@@ -83,7 +83,7 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required hide">*</span> ${text('退款金额(￥)')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:input path="totalAmount" class="form-control number"/>
+								<#form:input path="totalAmount" min="0" class="form-control number"/>
 							</div>
 						</div>
 					</div>
@@ -260,8 +260,8 @@ $("#returnProductCDataGrid").dataGrid({
 			}
 		},
 		{header:'${text("货物编码")}', name:'producCode', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'64', 'class':'form-control'}},
-		{header:'${text("单价")}', name:'price', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control number'}},
-		{header:'${text("数量")}', name:'number', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'11', 'class':'form-control required digits'}},
+		{header:'${text("单价")}', name:'price', width:150, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control number'}},
+		{header:'${text("数量")}', name:'number', width:150, editable:true, edittype:'text', editoptions:{'min':'0','maxlength':'11', 'class':'form-control required digits'}},
 		{header:'${text("总金额")}', name:'totalAmount', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control number'}},
 		{header:'${text("包装单位")}', name:'packageUnit', width:100, 
 			editable:true, edittype:'select', editoptions:{'class':'form-control',
@@ -271,8 +271,8 @@ $("#returnProductCDataGrid").dataGrid({
 				}
 			}
 		},
-		{header:'${text("净重")}', name:'netWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
-		{header:'${text("毛重")}', name:'grossWeight', width:150, editable:true, edittype:'text', editoptions:{'class':'form-control required number'}},
+		{header:'${text("净重")}', name:'netWeight', width:150, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control required number'}},
+		{header:'${text("毛重")}', name:'grossWeight', width:150, editable:true, edittype:'text', editoptions:{'min':'0','class':'form-control required number'}},
 		{header:'${text("规格")}', name:'spec', width:150, editable:true, edittype:'text', editoptions:{'maxlength':'200', 'class':'form-control'}},
 		{header:'${text("备注信息")}', name:'remarks', width:150, editable:true, edittype:'textarea', editoptions:{'maxlength':'500', 'class':'form-control', 'rows':'1'}},
 		{header:'${text("操作")}', name:'actions', width:80, sortable:false, fixed:true, formatter: function(val, obj, row, act){
